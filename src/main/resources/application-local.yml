@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MEETRAVEL_DB_LOCAL_URL}
+    username: ${MEETRAVEL_DB_USERNAME}
+    password: ${MEETRAVEL_DB_PASSWORD}
