@@ -21,11 +21,11 @@ public class UserReviewEntity extends BaseEntity {
     private String reviewerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "USER_ID", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "REVIEW")
+    @JoinColumn(name = "REVIEW_ID", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private ReviewEntity review;
 
 

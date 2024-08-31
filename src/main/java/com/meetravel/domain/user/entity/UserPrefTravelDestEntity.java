@@ -22,12 +22,12 @@ public class UserPrefTravelDestEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private UserEntity user;
 
-    @ManyToOne
-    @JoinColumn(name = "TRAVEL_DEST_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TRAVEL_DEST_ID", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private TravelDestEntity travelDest;
 
     public void setUser(UserEntity user) {
