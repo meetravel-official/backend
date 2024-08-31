@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface TravelDestRepository extends JpaRepository<TravelDestEntity, TravelDest> {
-    Optional<TravelDestEntity> findByTravelDestId(Long travelDestId);
+public interface TravelDestRepository extends JpaRepository<TravelDestEntity, Long> {
+    Optional<TravelDestEntity> findById(Long travelDestId);
 }
