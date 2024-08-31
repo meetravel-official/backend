@@ -112,7 +112,7 @@ public class SignUpService {
     private void addPrefTravelDestination(Set<SignUpRequest.TravelDestInfo> userTravelDestinations, UserEntity user) {
 
         for (SignUpRequest.TravelDestInfo travelDestInfo : userTravelDestinations) {
-            TravelDestEntity travelDest = travelDestRepository.findByTravelDestId(travelDestInfo.getId())
+            TravelDestEntity travelDest = travelDestRepository.findById(travelDestInfo.getId())
                     .orElseThrow(() -> new BadRequestException(ErrorCode.DATA_VALIDATION_ERROR));
 
             // 중간 테이블 객체 생성

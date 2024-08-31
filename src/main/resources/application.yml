@@ -16,11 +16,6 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-    datasource:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: ${MEETRAVEL_DB_LOCAL_URL}
-      username: ${MEETRAVEL_DB_USERNAME}
-      password: ${MEETRAVEL_DB_PASSWORD}
 
 jwt:
   secretKey: ${JWT_SECRET_KEY}
