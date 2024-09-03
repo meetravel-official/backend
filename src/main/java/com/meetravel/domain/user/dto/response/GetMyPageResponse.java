@@ -7,12 +7,15 @@ import com.meetravel.domain.user.enums.Review;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Builder
 public class GetMyPageResponse {
+    private String profileImageUrl;
     private String nickname;
+    private LocalDate birthDate;
     private PlanningType planningType;
     private String hobby;
     private MBTI mbti;
