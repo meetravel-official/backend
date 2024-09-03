@@ -1,7 +1,9 @@
 package com.meetravel.domain.user.entity;
 
 import com.meetravel.domain.travel_destination.entity.TravelDestEntity;
+import com.meetravel.domain.travel_destination.enums.TravelDest;
 import com.meetravel.global.audit.BaseEntity;
+import com.meetravel.global.converter.TravelDestConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +22,7 @@ public class UserPrefTravelDestEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "USER_PREF_TRAVEL_DEST_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,6 +32,10 @@ public class UserPrefTravelDestEntity extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TRAVEL_DEST_ID", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private TravelDestEntity travelDest;
+
+    @Column(name = "USER_PREF_TRAVEL_DEST")
+    @Convert(converter = TravelDestConverter.class)
+    private TravelDest userPrefTravelDest;
 
     public void setUser(UserEntity user) {
         this.user = user;

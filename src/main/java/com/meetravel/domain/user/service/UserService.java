@@ -39,7 +39,9 @@ public class UserService {
         List<TravelDest> userPrefTravelDestList = userPrefTravelDestRepository.getUserPrefTravelDestList(userId);
 
         return GetMyPageResponse.builder()
+                .profileImageUrl(user.getProfileImageUrl())
                 .nickname(user.getNickname())
+                .birthDate(user.getBirthDate())
                 .planningType(user.getPlanningType())
                 .hobby(user.getHobby())
                 .mbti(user.getMbti())

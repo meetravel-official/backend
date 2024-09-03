@@ -113,12 +113,13 @@ public class SignUpService {
 
         for (SignUpRequest.TravelDestInfo travelDestInfo : userTravelDestinations) {
             TravelDestEntity travelDest = travelDestRepository.findById(travelDestInfo.getId())
-                    .orElseThrow(() -> new BadRequestException(ErrorCode.DATA_VALIDATION_ERROR));
+                    .orElseThrow(() -> new BadRequestException(ErrorCode.TRAVEL_DEST_NOT_FOUND));
 
             // 중간 테이블 객체 생성
             UserPrefTravelDestEntity userPrefTravelDest = UserPrefTravelDestEntity.builder()
                     .user(user)
                     .travelDest(travelDest)
+                    .userPrefTravelDest(travelDest.getTravelDest())
                     .build();
 
             // 굳이 해주지 않아도 @CASCADE.ALL 옵션으로 연관관계 매핑 시 같이 저장됨
