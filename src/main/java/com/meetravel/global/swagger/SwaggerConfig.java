@@ -21,7 +21,8 @@ public class SwaggerConfig {
         AUTH("auth", "/auth"),
         SIGN_UP("sign_up", "/signup"),
         USER("user", "/users"),
-        ADMIN("admin", "/admin");
+        ADMIN("admin", "/admin"),
+        MATCHING_FORM("matching_form","/matching-form");
 
         private final String group;
         private final String urlPrefix;
@@ -71,6 +72,16 @@ public class SwaggerConfig {
                 .group(name)
                 .pathsToMatch(ApiUrl.USER.getUrlPrefix() + "/**")
                 .packagesToScan(BASE_PACKAGE + "." + ApiUrl.USER.getGroup())
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi matchingFormApi() {
+        final String name = ApiUrl.MATCHING_FORM.getGroup();
+        return GroupedOpenApi.builder()
+                .group(name)
+                .pathsToMatch(ApiUrl.MATCHING_FORM.getUrlPrefix() + "/**")
+                .packagesToScan(BASE_PACKAGE + "." + ApiUrl.MATCHING_FORM.getGroup())
                 .build();
     }
 
