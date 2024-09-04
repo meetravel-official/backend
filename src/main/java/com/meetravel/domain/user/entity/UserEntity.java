@@ -1,5 +1,6 @@
 package com.meetravel.domain.user.entity;
 
+import com.meetravel.domain.chat.entity.ChatRoom;
 import com.meetravel.domain.user.enums.*;
 import com.meetravel.global.audit.BaseEntity;
 import com.meetravel.global.converter.PlanningTypeConverter;
@@ -84,6 +85,9 @@ public class UserEntity extends BaseEntity {
     @Builder.Default
     private List<UserReviewEntity> reviews = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_room_id")
+    private ChatRoom chatRoom;
 
     // 회원의 선호여행지 추가(등록)
     public void addUserPrefTravelDest(UserPrefTravelDestEntity userPrefTravelDest) {

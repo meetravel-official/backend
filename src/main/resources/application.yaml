@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: meetravel
+
+  profiles:
+    include:
+      - db
+      - jwt
+      - auth
+
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    tagsSorter: alpha
+    operations-sorter: alpha
+    display-request-duration: true
+
+logging:
+  level:
+    com.meetravel: DEBUG

@@ -1,0 +1,14 @@
+auth:
+  kakao:
+    auth-url: https://kauth.kakao.com
+    grant_type: authorization_code
+    client_id: ${KAKAO_CLIENT_ID} # Client Id
+    client_secret: ${KAKAO_CLIENT_SECRET} # Client Secret ?
+    redirect_uri: ${KAKAO_REDIRECTED_URI}
+    content_type: application/x-www-form-urlencoded
+
+oauth:
+  kakao:
+    auth-url: https://kapi.kakao.com
+  apple:
+    auth-url: https://appleid.apple.com

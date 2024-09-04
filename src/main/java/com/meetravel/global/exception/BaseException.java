@@ -12,6 +12,7 @@ public class BaseException extends RuntimeException {
 
     @Getter
     protected final HttpStatus httpStatus;
+
     @Getter
     public String causeData;
 
