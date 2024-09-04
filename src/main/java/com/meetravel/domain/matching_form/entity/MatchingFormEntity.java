@@ -4,7 +4,6 @@ import com.meetravel.domain.matching_form.enums.Cost;
 import com.meetravel.domain.matching_form.enums.Duration;
 import com.meetravel.domain.matching_form.enums.GenderRatio;
 import com.meetravel.domain.matching_form.enums.GroupSize;
-import com.meetravel.domain.travel_destination.enums.TravelDest;
 import com.meetravel.global.audit.BaseEntity;
 import com.meetravel.global.converter.*;
 import jakarta.persistence.*;
@@ -51,10 +50,5 @@ public class MatchingFormEntity extends BaseEntity {
     @Column(name = "COST")
     @Convert(converter = CostConverter.class)
     private Cost cost;
-
-    @Column(name = "TRAVEL_DEST")
-    @Convert(converter = TravelDestConverter.class)
-    private TravelDest travelDest;
-
 
 }

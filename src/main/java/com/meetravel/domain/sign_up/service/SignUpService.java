@@ -3,18 +3,14 @@ package com.meetravel.domain.sign_up.service;
 
 import com.meetravel.domain.sign_up.dto.request.SignUpRequest;
 import com.meetravel.domain.sign_up.dto.response.GetSignUpInfoList;
-import com.meetravel.domain.travel_destination.entity.TravelDestEntity;
-import com.meetravel.domain.travel_destination.repository.TravelDestRepository;
 import com.meetravel.domain.user.entity.RoleEntity;
 import com.meetravel.domain.user.entity.UserEntity;
-import com.meetravel.domain.user.entity.UserPrefTravelDestEntity;
 import com.meetravel.domain.user.entity.UserRoleEntity;
 import com.meetravel.domain.user.enums.PlanningType;
 import com.meetravel.domain.user.enums.Role;
 import com.meetravel.domain.user.enums.ScheduleType;
 import com.meetravel.domain.user.enums.TravelFrequency;
 import com.meetravel.domain.user.repository.RoleRepository;
-import com.meetravel.domain.user.repository.UserPrefTravelDestRepository;
 import com.meetravel.domain.user.repository.UserRepository;
 import com.meetravel.global.exception.BadRequestException;
 import com.meetravel.global.exception.ErrorCode;
@@ -25,16 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class SignUpService {
 
     private final UserRepository userRepository;
-    private final UserPrefTravelDestRepository userPrefTravelDestRepository;
     private final RoleRepository roleRepository;
-    private final TravelDestRepository travelDestRepository;
 
     /**
      * 회원가입
@@ -79,7 +72,6 @@ public class SignUpService {
         // 회원 권한 부여
         this.addUserRole(user);
         // 회원 선호여행지 추가
-        this.addPrefTravelDestination(signUpRequest.getUserTravelDestinations(), user);
 
     }
 
@@ -104,34 +96,6 @@ public class SignUpService {
     }
 
     /**
-     * 회원의 선호 여행지 추가
-     *
-     * @param userTravelDestinations
-     * @param user
-     */
-    private void addPrefTravelDestination(Set<SignUpRequest.TravelDestInfo> userTravelDestinations, UserEntity user) {
-
-        for (SignUpRequest.TravelDestInfo travelDestInfo : userTravelDestinations) {
-            TravelDestEntity travelDest = travelDestRepository.findById(travelDestInfo.getId())
-                    .orElseThrow(() -> new BadRequestException(ErrorCode.TRAVEL_DEST_NOT_FOUND));
-
-            // 중간 테이블 객체 생성
-            UserPrefTravelDestEntity userPrefTravelDest = UserPrefTravelDestEntity.builder()
-                    .user(user)
-                    .travelDest(travelDest)
-                    .userPrefTravelDest(travelDest.getTravelDest())
-                    .build();
-
-            // 굳이 해주지 않아도 @CASCADE.ALL 옵션으로 연관관계 매핑 시 같이 저장됨
-            //userPrefTravelDestRepository.save(userPrefTravelDest);
-
-            // 각 객체로 불러올 수 있도록 리스트에 담아줌
-            user.addUserPrefTravelDest(userPrefTravelDest);
-        }
-
-    }
-
-    /**
      * 회원가입 시 필요한 목록 조회
      *
      * @return
@@ -146,14 +110,11 @@ public class SignUpService {
         List<GetSignUpInfoList.ScheduleTypeInfo> scheduleTypes = this.getScheduleTypeInfo();
         List<GetSignUpInfoList.PlanningTypeInfo> planningTypes = this.getPlanningTypeInfo();
 
-        // 선호 여행지
-        List<GetSignUpInfoList.TravelDestInfo> travelDestInfoList = this.getTravelDestInfo();
 
         return GetSignUpInfoList.builder()
                 .travelFrequencies(travelFrequencies)
                 .scheduleTypes(scheduleTypes)
                 .planningTypes(planningTypes)
-                .travelDestInfoList(travelDestInfoList)
                 .build();
     }
 
@@ -199,23 +160,5 @@ public class SignUpService {
                         .build())
                 .toList();
     }
-
-    /**
-     * 회원 가입 시, 선호 여행지 목록 조회
-     *
-     * @return
-     */
-    @Transactional(readOnly = true)
-    private List<GetSignUpInfoList.TravelDestInfo> getTravelDestInfo() {
-        List<TravelDestEntity> travelDestList = travelDestRepository.findAll();
-
-        return travelDestList.stream()
-                .map(travelDest -> GetSignUpInfoList.TravelDestInfo.builder()
-                        .id(travelDest.getId())
-                        .travelDest(travelDest.getTravelDest())
-                        .build())
-                .toList();
-    }
-
 
 }

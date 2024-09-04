@@ -1,11 +1,9 @@
 package com.meetravel.domain.user.service;
 
 import com.meetravel.domain.token.service.RefreshTokenService;
-import com.meetravel.domain.travel_destination.enums.TravelDest;
 import com.meetravel.domain.user.dto.response.GetMyPageResponse;
 import com.meetravel.domain.user.entity.UserEntity;
 import com.meetravel.domain.user.enums.Review;
-import com.meetravel.domain.user.repository.UserPrefTravelDestRepository;
 import com.meetravel.domain.user.repository.UserRepository;
 import com.meetravel.domain.user.repository.UserReviewRepository;
 import com.meetravel.global.exception.ErrorCode;
@@ -25,7 +23,6 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserReviewRepository userReviewRepository;
-    private final UserPrefTravelDestRepository userPrefTravelDestRepository;
     private final RefreshTokenService refreshTokenService;
     private final JwtService jwtService;
 
@@ -36,7 +33,6 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         List<Review> reviewList = userReviewRepository.getUserReview(userId);
-        List<TravelDest> userPrefTravelDestList = userPrefTravelDestRepository.getUserPrefTravelDestList(userId);
 
         return GetMyPageResponse.builder()
                 .profileImageUrl(user.getProfileImageUrl())
@@ -47,7 +43,6 @@ public class UserService {
                 .mbti(user.getMbti())
                 .intro(user.getIntro())
                 .reviewList(reviewList)
-                .userPrefTravelDestList(userPrefTravelDestList)
                 .build();
     }
 

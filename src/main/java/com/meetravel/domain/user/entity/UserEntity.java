@@ -1,10 +1,9 @@
 package com.meetravel.domain.user.entity;
 
+import com.meetravel.domain.matching_form.enums.Gender;
 import com.meetravel.domain.user.enums.*;
 import com.meetravel.global.audit.BaseEntity;
-import com.meetravel.global.converter.PlanningTypeConverter;
-import com.meetravel.global.converter.ScheduleTypeConverter;
-import com.meetravel.global.converter.TravelDestConverter;
+import com.meetravel.global.converter.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +39,10 @@ public class UserEntity extends BaseEntity {
     @Column(name = "BIRTH_DATE")
     private LocalDate birthDate;
 
+    @Column(name = "GENDER")
+    @Convert(converter = GenderConverter.class)
+    private Gender gender;
+
     @Column(name = "PHONE_NUMBER")
     private String phoneNumber;
 
@@ -47,7 +50,7 @@ public class UserEntity extends BaseEntity {
     private String profileImageUrl;
 
     @Column(name = "TRAVEL_COUNT")
-    @Convert(converter = TravelDestConverter.class)
+    @Convert(converter = TravelFrequencyConverter.class)
     private TravelFrequency travelFrequency;
 
     @Column(name = "SCHEDULE_TYPE")
@@ -76,20 +79,10 @@ public class UserEntity extends BaseEntity {
     @Builder.Default
     private List<UserRoleEntity> userRoles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<UserPrefTravelDestEntity> userPrefTravelDests = new ArrayList<>();
-
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     @Builder.Default
     private List<UserReviewEntity> reviews = new ArrayList<>();
 
-
-    // 회원의 선호여행지 추가(등록)
-    public void addUserPrefTravelDest(UserPrefTravelDestEntity userPrefTravelDest) {
-        this.userPrefTravelDests.add(userPrefTravelDest);
-        userPrefTravelDest.setUser(this);
-    }
 
     // 권한 부여
     public void addUserRole(UserRoleEntity userRole) {
