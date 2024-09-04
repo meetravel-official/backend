@@ -52,6 +52,10 @@ oauth:
   apple:
     auth-url: https://appleid.apple.com
 
+tour_api:
+  service_key: ${SERVICE_KEY}
+
+
 server:
   port: 8080
   servlet:
