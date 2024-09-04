@@ -4,20 +4,22 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.meetravel.global.enums.BaseEnum;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
-public enum GenderRatio implements BaseEnum {
-    MALE_FEMALE_1_1("남녀 1:1"),
-    SAME_GENDER("동성끼리");
+public enum Gender implements BaseEnum {
+    MALE("남성"),
+    FEMALE("여성");
 
     @JsonValue
     private final String value;
 
+    Gender(String value) {
+        this.value = value;
+    }
+
     @JsonCreator
-    public static GenderRatio fromValueToEnum(String value) {
-        for (GenderRatio gender : GenderRatio.values()) {
+    public static Gender fromValueToEnum(String value) {
+        for (Gender gender : Gender.values()) {
             if (gender.getValue().equals(value)) {
                 return gender;
             }
