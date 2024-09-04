@@ -16,14 +16,6 @@ public class GetAreaResponse {
     public static class Area {
         private String code;
         private String name;
-        private List<DetailArea> detailAreaList;
-    }
-
-    @Getter
-    @Builder
-    public static class DetailArea {
-        private String detailCode;
-        private String detailName;
     }
 
 }
