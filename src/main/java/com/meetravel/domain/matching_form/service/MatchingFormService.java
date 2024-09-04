@@ -2,9 +2,10 @@ package com.meetravel.domain.matching_form.service;
 
 import com.meetravel.domain.matching_form.dto.request.CreateMatchingFormRequest;
 import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
+import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
 import com.meetravel.domain.matching_form.entity.MatchingFormEntity;
 import com.meetravel.domain.matching_form.repository.MatchingFormRepository;
-import com.meetravel.domain.tour_api.TourApiAreaFeginClient;
+import com.meetravel.domain.tour_api.TourApiAreaFeignClient;
 import com.meetravel.domain.tour_api.TourApiAreaResponse;
 import com.meetravel.domain.tour_api.TourApiDetailAreaResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class MatchingFormService {
     private String serviceKey;
 
     private final MatchingFormRepository matchingFormRepository;
-    private final TourApiAreaFeginClient tourApiAreaFeginClient;
+    private final TourApiAreaFeignClient tourApiAreaFeginClient;
 
     /**
      * 매칭 신청서 작성
@@ -48,43 +49,42 @@ public class MatchingFormService {
 
     }
 
-    public GetAreaResponse getAreaResponse() {
+    public GetAreaResponse getArea() {
         int numOfRows = 17; // 충분한 수 넣어줌
         int pageNo = 1;
         String mobileOS = "ETC";
         String mobileApp = "meetravel";
         String _type = "json";
 
-        TourApiAreaResponse tourApiAreaResponse = tourApiAreaFeginClient.getArea(serviceKey, numOfRows, pageNo, mobileOS, mobileApp, _type);
+        TourApiAreaResponse tourApiAreaResponse = tourApiAreaFeginClient.getArea(numOfRows, pageNo, mobileOS, mobileApp, _type, serviceKey);
 
-        List<GetAreaResponse.Area> areaList = new ArrayList<>();
-        for (TourApiAreaResponse.Item item : tourApiAreaResponse.getBody().getItemList()) {
-            TourApiDetailAreaResponse tourApiDetailAreaResponse = tourApiAreaFeginClient.getDetailArea(serviceKey, numOfRows, pageNo, mobileOS, mobileApp, _type, item.getCode());
-
-            /** 대분류 지역마다 상세 지역 개수가 다르기 때문에 이전에요청해서 받아온 totalCount로 다시 한 번 요청해야함 */
-            List<GetAreaResponse.DetailArea> detailAreaList = getDetailAreaList(tourApiDetailAreaResponse.getBody().getTotalCount(),pageNo,mobileOS, mobileApp, _type, item.getCode());
-
-            GetAreaResponse.Area area = GetAreaResponse.Area.builder()
-                    .code(item.getCode())
-                    .name(item.getName())
-                    .detailAreaList(detailAreaList)
-                    .build();
-            areaList.add(area);
-        }
+        List<GetAreaResponse.Area> areaList = tourApiAreaResponse.getResponse().getBody().getItems().getItemList().stream()
+                .map(item -> GetAreaResponse.Area.builder()
+                        .code(item.getCode())
+                        .name(item.getName())
+                        .build())
+                .toList();
 
         return GetAreaResponse.builder().areaList(areaList).build();
     }
 
-    private List<GetAreaResponse.DetailArea> getDetailAreaList(int numOfRows, int pageNo, String mobileOS, String mobileApp, String _type, String code) {
-        TourApiDetailAreaResponse tourApiDetailAreaResponse = tourApiAreaFeginClient.getDetailArea(serviceKey, numOfRows, pageNo, mobileOS, mobileApp, _type, code);
-        return tourApiDetailAreaResponse.getBody().getItemList().stream()
-                .map(detailItem -> GetAreaResponse.DetailArea.builder()
-                        .detailCode(detailItem.getCode())
-                        .detailName(detailItem.getName())
+    public GetDetailAreaResponse getDetailArea(String code) {
+        int numOfRows = 17; // 충분한 수 넣어줌
+        int pageNo = 1;
+        String mobileOS = "ETC";
+        String mobileApp = "meetravel";
+        String _type = "json";
+        TourApiDetailAreaResponse tourApiDetailAreaResponse = tourApiAreaFeginClient.getDetailArea(numOfRows, pageNo, mobileOS, mobileApp, code, _type, serviceKey);
+
+        List<GetDetailAreaResponse.DetailArea> detailAreaList = tourApiDetailAreaResponse.getResponse().getBody().getItems().getItemList().stream()
+                .map(item -> GetDetailAreaResponse.DetailArea.builder()
+                        .detailCode(item.getCode())
+                        .detailName(item.getName())
                         .build())
                 .toList();
 
-    }
+        return GetDetailAreaResponse.builder().detailAreaList(detailAreaList).build();
 
+    }
 
 }

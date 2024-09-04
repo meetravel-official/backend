@@ -2,6 +2,7 @@ package com.meetravel.domain.matching_form.controller;
 
 import com.meetravel.domain.matching_form.dto.request.CreateMatchingFormRequest;
 import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
+import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
 import com.meetravel.domain.matching_form.service.MatchingFormService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,13 @@ public class MatchingFormController implements MatchingFormControllerDoc {
     @Override
     @GetMapping("/areas")
     public GetAreaResponse getAreaResponse() {
-        return matchingFormService.getAreaResponse();
+        return matchingFormService.getArea();
+    }
+
+    @Override
+    @GetMapping("/areas/detail")
+    public GetDetailAreaResponse getDetailAreaResponse(@RequestParam String code) {
+        return matchingFormService.getDetailArea(code);
     }
 
 }
