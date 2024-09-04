@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum GenderRatio implements BaseEnum {
-    ANY("상관없음"),
     MALE_FEMALE_1_1("남녀 1:1"),
     SAME_GENDER("동성끼리");
 
