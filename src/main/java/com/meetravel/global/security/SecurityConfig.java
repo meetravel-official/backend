@@ -31,7 +31,12 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     public static final String[] PERMIT_URL = {
-            "/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html"
+        "/auth/**",
+        "/chatrooms/**",
+        "/chat.*",
+        "/swagger-ui/**",
+        "/v3/api-docs/**",
+        "/swagger-ui.html"
     };
 
     private static final String[] GetMethodPermitURL = {
@@ -41,26 +46,26 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                // 세션 사용하지 않으므로 STATELESS로 설정
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                //== URL별 권한 관리 옵션 ==//
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(PERMIT_URL).permitAll()
-                        .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.GET, GetMethodPermitURL).permitAll()
-                        .anyRequest().authenticated()
-                )
-                .exceptionHandling((exceptionConfig) ->
-                        exceptionConfig
-                                .authenticationEntryPoint(customAuthenticationEntryPoint)
-                                .accessDeniedHandler(customAccessDeniedHandler)
-                )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtService, customAuthenticationEntryPoint),
-                        UsernamePasswordAuthenticationFilter.class);
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            // 세션 사용하지 않으므로 STATELESS로 설정
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            //== URL별 권한 관리 옵션 ==//
+            .authorizeHttpRequests((authorize) -> authorize
+                .requestMatchers(PERMIT_URL).permitAll()
+                .requestMatchers("/admin/**").hasRole(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.GET, GetMethodPermitURL).permitAll()
+                .anyRequest().authenticated()
+            )
+            .exceptionHandling((exceptionConfig) ->
+                exceptionConfig
+                    .authenticationEntryPoint(customAuthenticationEntryPoint)
+                    .accessDeniedHandler(customAccessDeniedHandler)
+            )
+            .addFilterBefore(new JwtAuthenticationFilter(jwtService, customAuthenticationEntryPoint),
+                UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -86,7 +91,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() { // security를 적용하지 않을 리소스
         return web -> web.ignoring()
-                // error endpoint를 열어줘야 함, favicon.ico 추가!
-                .requestMatchers("/error", "/favicon.ico");
+            // error endpoint를 열어줘야 함, favicon.ico 추가!
+            .requestMatchers("/error", "/favicon.ico");
     }
 }
