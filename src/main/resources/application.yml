@@ -78,4 +78,4 @@ spring:
 spring:
   confing:
     activate:
-      on-profile: "dev"
+      on-profile: "prod"
