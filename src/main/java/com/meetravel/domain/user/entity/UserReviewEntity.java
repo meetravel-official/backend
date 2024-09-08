@@ -28,5 +28,4 @@ public class UserReviewEntity extends BaseEntity {
     @JoinColumn(name = "REVIEW_ID", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private ReviewEntity review;
 
-
 }
