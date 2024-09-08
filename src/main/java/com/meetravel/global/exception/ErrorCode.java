@@ -28,6 +28,7 @@ public enum ErrorCode {
     NOT_TEMPORARY_TOKEN_ALLOWED_URL_EXCEPTION(HttpStatus.UNAUTHORIZED, "임시 토큰으로 접근할 수 없는 URL입니다."),
     REFRESH_TOKEN_NOT_VALID(HttpStatus.UNAUTHORIZED, "유효하지 않은 Refresh Token 입니다."),
     USER_ALREADY_INSIDE_CHATROOM(HttpStatus.BAD_REQUEST, "해당 회원은 이미 채팅방에 참여하고 있습니다."),
+    CHAT_ROOM_NOT_FOUND(HttpStatus.BAD_REQUEST, "존재하지 않는 채팅방 고유번호입니다.")
     ;
 
     ErrorCode(HttpStatus status, String message) {
