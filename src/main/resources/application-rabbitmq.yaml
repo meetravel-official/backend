@@ -4,3 +4,11 @@ spring:
     password: guest
     host: localhost
     port: 5672
+
+rabbitmq:
+  queue:
+    name: chat.queue
+  exchange:
+    name: chat.exchange
+  routing:
+    key: room.*

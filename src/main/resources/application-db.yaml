@@ -6,14 +6,11 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     generate-ddl: true
     show-sql: true
-    format-sql: true
-    database: mysql
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-    datasource:
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      url: ${MEETRAVEL_DB_LOCAL_URL}
-      username: ${MEETRAVEL_DB_USERNAME}
-      password: ${MEETRAVEL_DB_PASSWORD}
-
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MEETRAVEL_DB_LOCAL_URL}
+    username: test # ${MEETRAVEL_DB_USERNAME}
+    password: test # ${MEETRAVEL_DB_PASSWORD}

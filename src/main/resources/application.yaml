@@ -1,20 +1,25 @@
+server:
+  port: 8080
+#  servlet:
+#    encoding:
+#      charset: UTF-8
+#      enabled: true
+#      force: true
+
 spring:
   application:
     name: meetravel
+
+  # dotenv
+  config:
+    import: optional:file:.env[.properties]
 
   profiles:
     include:
       - db
       - jwt
       - auth
-
-server:
-  port: 8080
-  servlet:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
+      - rabbitmq
 
 springdoc:
   api-docs:
