@@ -17,12 +17,14 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -51,5 +53,13 @@ public class ChatRoom extends BaseEntity {
 
     public void addUsers(Set<UserEntity> users) {
         this.userList.addAll(users);
+    }
+
+    public void removeUser(UserEntity user) {
+        this.userList.remove(user);
+    }
+
+    public boolean checkUserExists(UserEntity targetUser) {
+        return this.userList.stream().anyMatch(user -> user.equals(targetUser));
     }
 }
