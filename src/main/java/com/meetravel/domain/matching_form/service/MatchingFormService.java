@@ -42,6 +42,10 @@ public class MatchingFormService {
                 .groupSize(request.getGroupSize())
                 .genderRatio(request.getGenderRatio())
                 .cost(request.getCost())
+                .areaCode(request.getArea().getCode())
+                .areaName(request.getArea().getName())
+                .detailAreaCode(request.getDetailArea().getDetailCode())
+                .detailAreaName(request.getDetailArea().getDetailName())
                 .build();
 
         // 매칭 신청서 저장

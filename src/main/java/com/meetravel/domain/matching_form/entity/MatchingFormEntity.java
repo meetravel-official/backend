@@ -51,4 +51,16 @@ public class MatchingFormEntity extends BaseEntity {
     @Convert(converter = CostConverter.class)
     private Cost cost;
 
+    @Column(name = "AREA_CODE")
+    private String areaCode;
+
+    @Column(name = "AREA_NAME")
+    private String areaName;
+
+    @Column(name = "DETAIL_AREA_CODE")
+    private String detailAreaCode;
+
+    @Column(name = "DETAIL_AREA_NAME")
+    private String detailAreaName;
+
 }

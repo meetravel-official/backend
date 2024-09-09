@@ -19,5 +19,20 @@ public class CreateMatchingFormRequest {
     private GroupSize groupSize;
     private GenderRatio genderRatio;
     private Cost cost;
+    private Area area;
+    private DetailArea detailArea;
 
+    @Getter
+    @Builder
+    public static class Area {
+        private String code;
+        private String name;
+    }
+
+    @Getter
+    @Builder
+    public static class DetailArea {
+        private String detailCode;
+        private String detailName;
+    }
 }
