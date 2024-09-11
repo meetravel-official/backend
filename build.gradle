@@ -42,10 +42,12 @@ dependencies {
     // for Chatting
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
 
     // dotenv
     implementation "me.paulschwarz:spring-dotenv:4.0.0"
+    testImplementation 'io.projectreactor:reactor-test'
 
     // MySQL
     runtimeOnly 'mysql:mysql-connector-java:8.0.32'
