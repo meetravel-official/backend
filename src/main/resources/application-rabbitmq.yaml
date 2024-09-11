@@ -7,8 +7,8 @@ spring:
 
 rabbitmq:
   queue:
-    name: chat.queue
+    name: 'chat.queue'
   exchange:
-    name: chat.exchange
+    name: 'chat.exchange'
   routing:
-    key: room.*
+    key: 'room.*'

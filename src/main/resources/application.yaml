@@ -1,10 +1,10 @@
 server:
   port: 8080
-#  servlet:
-#    encoding:
-#      charset: UTF-8
-#      enabled: true
-#      force: true
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 spring:
   application:
@@ -20,6 +20,9 @@ spring:
       - jwt
       - auth
       - rabbitmq
+
+tour_api:
+  service_key: ${SERVICE_KEY}
 
 springdoc:
   api-docs:
