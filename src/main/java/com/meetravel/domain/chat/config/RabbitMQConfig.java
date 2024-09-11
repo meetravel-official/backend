@@ -22,13 +22,13 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     @Value("${rabbitmq.queue.name}")
-    private static String CHAT_QUEUE_NAME;
+    private String CHAT_QUEUE_NAME;
 
     @Value("${rabbitmq.exchange.name}")
-    private static String CHAT_EXCHANGE_NAME;
+    private String CHAT_EXCHANGE_NAME;
 
     @Value("${rabbitmq.routing.key}")
-    private static String CHAT_ROUTING_KEY;
+    private String CHAT_ROUTING_KEY;
 
     @Value("${spring.rabbitmq.username}")
     private String rabbitUser;
