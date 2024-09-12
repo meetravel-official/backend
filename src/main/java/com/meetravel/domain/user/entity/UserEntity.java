@@ -79,10 +79,6 @@ public class UserEntity extends BaseEntity {
     @Builder.Default
     private List<UserRoleEntity> userRoles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    @Builder.Default
-    private List<UserReviewEntity> reviews = new ArrayList<>();
-
 
     // 권한 부여
     public void addUserRole(UserRoleEntity userRole) {

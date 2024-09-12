@@ -2,12 +2,10 @@ package com.meetravel.domain.user.dto.response;
 
 import com.meetravel.domain.user.enums.MBTI;
 import com.meetravel.domain.user.enums.PlanningType;
-import com.meetravel.domain.user.enums.Review;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Builder
@@ -19,6 +17,5 @@ public class GetMyPageResponse {
     private String hobby;
     private MBTI mbti;
     private String intro;
-    private List<Review> reviewList;
 
 }
