@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum GenderRatio implements BaseEnum {
-    MALE_FEMALE_1_1("남녀 1:1"),
+    MALE_FEMALE_1_1("이성끼리"),
     SAME_GENDER("동성끼리");
 
     @JsonValue
