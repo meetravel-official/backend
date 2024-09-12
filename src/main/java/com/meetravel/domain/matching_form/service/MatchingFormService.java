@@ -4,16 +4,20 @@ import com.meetravel.domain.matching_form.dto.request.CreateMatchingFormRequest;
 import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
 import com.meetravel.domain.matching_form.entity.MatchingFormEntity;
+import com.meetravel.domain.matching_form.entity.TravelKeywordEntity;
+import com.meetravel.domain.matching_form.enums.TravelKeyword;
 import com.meetravel.domain.matching_form.repository.MatchingFormRepository;
+import com.meetravel.domain.matching_form.repository.TravelKeywordRepository;
 import com.meetravel.domain.tour_api.TourApiAreaFeignClient;
 import com.meetravel.domain.tour_api.TourApiAreaResponse;
 import com.meetravel.domain.tour_api.TourApiDetailAreaResponse;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 
@@ -25,6 +29,7 @@ public class MatchingFormService {
     private String serviceKey;
 
     private final MatchingFormRepository matchingFormRepository;
+    private final TravelKeywordRepository travelKeywordRepository;
     private final TourApiAreaFeignClient tourApiAreaFeginClient;
 
     /**
@@ -50,8 +55,28 @@ public class MatchingFormService {
 
         // 매칭 신청서 저장
         matchingFormRepository.save(matchingForm);
+        
+        // 매칭 신청서의 키워드 저장
+        for (TravelKeyword keyword : request.getTravelKeywordList()) {
+            this.addTravelKeyword(matchingForm, keyword);
+        }
 
     }
+
+    /**
+     * 매칭신청서에 매핑되는 여행키워드 저장
+     * @param matchingForm
+     * @param keyword
+     */
+    private void addTravelKeyword(MatchingFormEntity matchingForm, TravelKeyword keyword) {
+        TravelKeywordEntity travelKeyword = TravelKeywordEntity.builder()
+                .matchingForm(matchingForm)
+                .keyword(keyword)
+                .build();
+
+        travelKeywordRepository.save(travelKeyword);
+    }
+
 
     public GetAreaResponse getArea() {
         int numOfRows = 17; // 충분한 수 넣어줌
