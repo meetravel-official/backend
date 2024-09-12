@@ -1,13 +1,11 @@
 package com.meetravel.domain.matching_form.dto.request;
 
-import com.meetravel.domain.matching_form.enums.Cost;
-import com.meetravel.domain.matching_form.enums.Duration;
-import com.meetravel.domain.matching_form.enums.GenderRatio;
-import com.meetravel.domain.matching_form.enums.GroupSize;
+import com.meetravel.domain.matching_form.enums.*;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Builder
@@ -21,6 +19,7 @@ public class CreateMatchingFormRequest {
     private Cost cost;
     private Area area;
     private DetailArea detailArea;
+    private List<TravelKeyword> travelKeywordList;
 
     @Getter
     @Builder
