@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "matching_application_form")
@@ -23,7 +25,7 @@ import java.time.LocalDate;
 public class MatchingFormEntity extends BaseEntity {
 
     @Id
-    @Column(name = "MATCHING_APPL_FORM_ID")
+    @Column(name = "MATCHING_FORM_ID")
     private Long id;
 
     @Column(name = "USER_ID", unique = true)
@@ -63,4 +65,13 @@ public class MatchingFormEntity extends BaseEntity {
     @Column(name = "DETAIL_AREA_NAME")
     private String detailAreaName;
 
+    @OneToMany(mappedBy = "matchingForm", orphanRemoval = true)
+    @Builder.Default
+    private List<TravelKeywordEntity> travelKeywordList = new ArrayList<>();
+
+
+    public void addTravelKeyword(TravelKeywordEntity travelKeyword) {
+        travelKeywordList.add(travelKeyword);
+        travelKeyword.setMatchingForm(this);
+    }
 }
