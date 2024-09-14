@@ -49,6 +49,7 @@ public class SignUpService {
                 .name(signUpRequest.getName())
                 .nickname(signUpRequest.getNickname())
                 .birthDate(signUpRequest.getBirthDate())
+                .gender(signUpRequest.getGender())
                 .phoneNumber(signUpRequest.getPhoneNumber())
                 .profileImageUrl(signUpRequest.getProfileImageUrl())
                 .travelFrequency(signUpRequest.getTravelFrequency())
