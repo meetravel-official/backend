@@ -1,5 +1,6 @@
 package com.meetravel.domain.user.entity;
 
+import com.meetravel.domain.chatroom.entity.UserChatRoomEntity;
 import com.meetravel.domain.matching_form.enums.Gender;
 import com.meetravel.domain.user.enums.*;
 import com.meetravel.global.audit.BaseEntity;
@@ -12,7 +13,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -79,6 +82,8 @@ public class UserEntity extends BaseEntity {
     @Builder.Default
     private List<UserRoleEntity> userRoles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserChatRoomEntity> userChatRooms = new HashSet<>();
 
     // 권한 부여
     public void addUserRole(UserRoleEntity userRole) {

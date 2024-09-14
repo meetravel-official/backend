@@ -1,9 +1,11 @@
 package com.meetravel.domain.matching_form.entity;
 
+import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.domain.matching_form.enums.Cost;
 import com.meetravel.domain.matching_form.enums.Duration;
 import com.meetravel.domain.matching_form.enums.GenderRatio;
 import com.meetravel.domain.matching_form.enums.GroupSize;
+import com.meetravel.domain.user.entity.UserEntity;
 import com.meetravel.global.audit.BaseEntity;
 import com.meetravel.global.converter.*;
 import jakarta.persistence.*;
@@ -28,8 +30,13 @@ public class MatchingFormEntity extends BaseEntity {
     @Column(name = "MATCHING_FORM_ID")
     private Long id;
 
-    @Column(name = "USER_ID", unique = true)
-    private String userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID")
+    private UserEntity user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_room_id")
+    private ChatRoomEntity chatRoom;
 
     @Column(name = "DURATION")
     @Convert(converter = DurationConverter.class)
