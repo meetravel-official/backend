@@ -82,7 +82,7 @@ public class MatchingFormEntity extends BaseEntity {
         travelKeyword.setMatchingForm(this);
     }
 
-    public void enterChatRoom(ChatRoomEntity chatRoomEntity) {
+    public void joinChatRoom(ChatRoomEntity chatRoomEntity) {
         this.chatRoom = chatRoomEntity;
     }
 }

@@ -41,7 +41,7 @@ public class ChatRoomService {
 
         ChatRoomEntity savedChatRoomEntity = chatRoomRepository.save(new ChatRoomEntity());
 
-        matchingFormEntity.enterChatRoom(savedChatRoomEntity);
+        matchingFormEntity.joinChatRoom(savedChatRoomEntity);
 
         matchingFormRepository.save(matchingFormEntity);
         userChatRoomRepository.save(
