@@ -12,7 +12,7 @@ import com.meetravel.domain.user.repository.UserRepository;
 import com.meetravel.global.exception.BadRequestException;
 import com.meetravel.global.exception.ErrorCode;
 import com.meetravel.global.exception.NotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
