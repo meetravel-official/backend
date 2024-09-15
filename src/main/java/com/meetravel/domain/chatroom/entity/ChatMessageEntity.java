@@ -11,21 +11,21 @@ import java.time.ZoneId;
 @Table(name = "chat_message")
 public class ChatMessageEntity {
     @Id
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "ID", nullable = false, updatable = false)
     private final String id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    @JoinColumn(name = "USER_ID", nullable = false, updatable = false)
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_room_id")
+    @JoinColumn(name = "CHAT_ROOM_ID")
     private ChatRoomEntity chatRoom;
 
-    @Column(name = "message", nullable = false, updatable = false)
+    @Column(name = "MESSAGE", nullable = false, updatable = false)
     private String message;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
     private final LocalDateTime createdAt;
 
     public ChatMessageEntity() {

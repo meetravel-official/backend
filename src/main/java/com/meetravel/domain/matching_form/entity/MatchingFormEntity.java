@@ -35,7 +35,7 @@ public class MatchingFormEntity extends BaseEntity {
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_room_id")
+    @JoinColumn(name = "CHAT_ROOM_ID")
     private ChatRoomEntity chatRoom;
 
     @Column(name = "DURATION")

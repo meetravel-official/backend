@@ -11,21 +11,21 @@ import java.time.ZoneId;
 public class UserChatRoomEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "ID", nullable = false, updatable = false)
     private final Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "USER_ID")
     private UserEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chat_room_id")
+    @JoinColumn(name = "CHAT_ROOM_ID")
     private ChatRoomEntity chatRoom;
 
-    @Column(name = "joined_at", nullable = false, updatable = false)
+    @Column(name = "JOINED_AT", nullable = false, updatable = false)
     private final LocalDateTime joinedAt;
 
-    @Column(name = "leave_at")
+    @Column(name = "LEAVE_AT")
     private LocalDateTime leaveAt;
 
     public UserChatRoomEntity() {

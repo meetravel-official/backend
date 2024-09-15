@@ -13,7 +13,7 @@ import java.util.List;
 public class ChatRoomEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, updatable = false)
+    @Column(name = "ID", nullable = false, updatable = false)
     private final Long id;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -22,7 +22,7 @@ public class ChatRoomEntity {
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchingFormEntity> matchingForms = new ArrayList<>();
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "CREATED_AT", nullable = false, updatable = false)
     private final LocalDateTime createdAt;
 
     public ChatRoomEntity() {
