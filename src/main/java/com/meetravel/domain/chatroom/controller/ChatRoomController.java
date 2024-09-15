@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/chat-rooms")
 @RestController
 @RequiredArgsConstructor
-public class ChatRoomController {
+public class ChatRoomController implements ChatRoomControllerDoc {
     private final ChatRoomService chatRoomService;
 
+    @Override
     @PostMapping
     public ResponseEntity<CreateChatRoomResponse> createChatRoom(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -25,7 +26,7 @@ public class ChatRoomController {
     ) {
         CreateChatRoomResponse response = chatRoomService.createChatRoom(
                 userDetails.getUsername(),
-                request.matchingFormId()
+                request.getMatchingFormId()
         );
 
         return ResponseEntity.ok(response);
