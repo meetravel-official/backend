@@ -4,3 +4,8 @@ spring:
     url: ${MEETRAVEL_DB_LOCAL_URL}
     username: ${MEETRAVEL_DB_USERNAME}
     password: ${MEETRAVEL_DB_PASSWORD}
+
+rabbitmq:
+  relay:
+    host: ${MEETRAVEL_RABBITMQ_RELAY_HOST}
+    port: ${MEETRAVEL_RABBITMQ_RELAY_PORT}

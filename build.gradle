@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.6'
@@ -34,9 +36,13 @@ dependencyManagement {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation("org.springframework.security:spring-security-messaging")
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
+    implementation("org.springframework.boot:spring-boot-starter-reactor-netty")
 
     // MySQL
     runtimeOnly 'mysql:mysql-connector-java:8.0.32'
@@ -67,6 +73,12 @@ dependencies {
     implementation 'software.amazon.awssdk:auth:2.27.2' // AWS SDK for authentication
 
     implementation("com.github.f4b6a3:uuid-creator:6.0.0")
+
+    if (Os.isFamily(Os.FAMILY_MAC) && Os.isArch("x86_64")) {
+        runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.113.Final:osx-x86_64")
+    } else if (Os.isFamily(Os.FAMILY_MAC) && Os.isArch("aarch64")) {
+        runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.113.Final:osx-aarch_64")
+    }
 }
 
 
