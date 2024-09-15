@@ -12,6 +12,10 @@ import com.meetravel.domain.tour_api.TourApiAreaFeignClient;
 import com.meetravel.domain.tour_api.TourApiAreaResponse;
 import com.meetravel.domain.tour_api.TourApiDetailAreaResponse;
 
+import com.meetravel.domain.user.entity.UserEntity;
+import com.meetravel.domain.user.repository.UserRepository;
+import com.meetravel.global.exception.ErrorCode;
+import com.meetravel.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,6 +32,7 @@ public class MatchingFormService {
     @Value("${tour_api.service_key}")
     private String serviceKey;
 
+    private final UserRepository userRepository;
     private final MatchingFormRepository matchingFormRepository;
     private final TravelKeywordRepository travelKeywordRepository;
     private final TourApiAreaFeignClient tourApiAreaFeginClient;
@@ -39,8 +44,11 @@ public class MatchingFormService {
      */
     @Transactional
     public void createMatchingForm(String userId, CreateMatchingFormRequest request) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
         MatchingFormEntity matchingForm = MatchingFormEntity.builder()
-                .userId(userId)
+                .user(user)
                 .duration(request.getDuration())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
