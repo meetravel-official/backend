@@ -13,9 +13,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -83,7 +81,7 @@ public class UserEntity extends BaseEntity {
     private List<UserRoleEntity> userRoles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserChatRoomEntity> userChatRooms = new HashSet<>();
+    private List<UserChatRoomEntity> userChatRooms = new ArrayList<>();
 
     // 권한 부여
     public void addUserRole(UserRoleEntity userRole) {

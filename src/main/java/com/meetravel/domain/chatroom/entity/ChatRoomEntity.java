@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "chat_room")
@@ -17,10 +17,10 @@ public class ChatRoomEntity {
     private final Long id;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserChatRoomEntity> userChatRooms = new HashSet<>();
+    private List<UserChatRoomEntity> userChatRooms = new ArrayList<>();
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<MatchingFormEntity> matchingForms = new HashSet<>();
+    private List<MatchingFormEntity> matchingForms = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private final LocalDateTime createdAt;
