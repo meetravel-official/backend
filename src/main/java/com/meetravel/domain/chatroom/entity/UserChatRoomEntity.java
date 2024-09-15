@@ -28,8 +28,15 @@ public class UserChatRoomEntity {
     @Column(name = "LEAVE_AT")
     private LocalDateTime leaveAt;
 
-    public UserChatRoomEntity() {
+    protected UserChatRoomEntity() {
         this.id = 0L;
         this.joinedAt = LocalDateTime.now(ZoneId.of("UTC"));
+    }
+
+    public UserChatRoomEntity(UserEntity user, ChatRoomEntity chatRoom) {
+        this();
+
+        this.user = user;
+        this.chatRoom = chatRoom;
     }
 }
