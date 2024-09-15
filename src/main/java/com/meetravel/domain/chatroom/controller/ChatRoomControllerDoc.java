@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestBody;
 
+@SuppressWarnings(value = "unused")
 @Tag(name = "채팅방")
 public interface ChatRoomControllerDoc {
     @Operation(
