@@ -34,10 +34,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .enableStompBrokerRelay("/queue", "/topic", "/exchange")
                 .setRelayHost(rabbitMQProperties.getHost())
                 .setRelayPort(rabbitMQStompProperties.getPort())
-                .setClientLogin("admin")
-                .setClientPasscode("#*eB@zd2qbuq6+F_<rJ$")
-                .setSystemLogin("admin")
-                .setSystemPasscode("#*eB@zd2qbuq6+F_<rJ$");
+                .setClientLogin(rabbitMQProperties.getUsername())
+                .setClientPasscode(rabbitMQProperties.getPassword())
+                .setSystemLogin(rabbitMQProperties.getUsername())
+                .setSystemPasscode(rabbitMQProperties.getPassword());
 
         registry.setApplicationDestinationPrefixes("/pub");
     }
