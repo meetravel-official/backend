@@ -33,8 +33,8 @@ public class RabbitMQConfig {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setHost("localhost");
         connectionFactory.setPort(10301);
-        connectionFactory.setUsername("guest");
-        connectionFactory.setPassword("guest");
+        connectionFactory.setUsername("admin");
+        connectionFactory.setPassword("#*eB@zd2qbuq6+F_<rJ$");
 
         return connectionFactory;
     }

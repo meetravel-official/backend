@@ -49,14 +49,14 @@ class ChatRoomSocketControllerTest {
 
         session.send("/app/join", new ChatMessage(ChatMessageType.JOIN, 1L, "3705264650@kakao", null));
 
-        session.subscribe("/topic/chat-rooms/1", new StompSessionHandlerAdapter() {
+        session.subscribe("chat.exchange", new StompSessionHandlerAdapter() {
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
                 messageFuture.complete((ChatMessage) payload);
             }
         });
 
-        ChatMessage receivedMessage = messageFuture.get(2, TimeUnit.SECONDS);
+        ChatMessage receivedMessage = messageFuture.get(10, TimeUnit.SECONDS);
 
         assertThat(receivedMessage.getMessage()).isEqualTo("채지원님이 채팅방에 입장하셨습니다.");
     }

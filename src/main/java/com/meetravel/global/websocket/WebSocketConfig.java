@@ -27,8 +27,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
                 .setRelayHost(rabbitMQRelayProperties.getHost())
                 .setRelayPort(rabbitMQRelayProperties.getPort())
-                .setClientLogin("guest")
-                .setClientPasscode("guest")
+                .setClientLogin("admin")
+                .setClientPasscode("#*eB@zd2qbuq6+F_<rJ$")
                 .setSystemLogin("admin")
                 .setSystemPasscode("#*eB@zd2qbuq6+F_<rJ$");
 
