@@ -1,6 +1,7 @@
 package com.meetravel.global.websocket;
 
-import com.meetravel.global.websocket.properties.RabbitMQRelayProperties;
+import com.meetravel.global.websocket.properties.RabbitMQProperties;
+import com.meetravel.global.websocket.properties.RabbitMQStompProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -13,7 +14,8 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    private final RabbitMQRelayProperties rabbitMQRelayProperties;
+    private final RabbitMQProperties rabbitMQProperties;
+    private final RabbitMQStompProperties rabbitMQStompProperties;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -30,8 +32,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry
                 .setPathMatcher(new AntPathMatcher("."))
                 .enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
-                .setRelayHost(rabbitMQRelayProperties.getHost())
-                .setRelayPort(rabbitMQRelayProperties.getPort())
+                .setRelayHost(rabbitMQProperties.getHost())
+                .setRelayPort(rabbitMQStompProperties.getPort())
                 .setClientLogin("admin")
                 .setClientPasscode("#*eB@zd2qbuq6+F_<rJ$")
                 .setSystemLogin("admin")

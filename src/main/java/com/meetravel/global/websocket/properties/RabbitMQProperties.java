@@ -8,8 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "rabbitmq.relay")
-public class RabbitMQRelayProperties {
+@ConfigurationProperties(prefix = "rabbitmq")
+public class RabbitMQProperties {
     private String host;
-    private int port;
+    private String username;
+    private String password;
 }

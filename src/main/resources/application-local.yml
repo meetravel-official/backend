@@ -6,6 +6,11 @@ spring:
     password: ${MEETRAVEL_DB_PASSWORD}
 
 rabbitmq:
-  relay:
-    host: ${MEETRAVEL_RABBITMQ_RELAY_HOST}
-    port: ${MEETRAVEL_RABBITMQ_RELAY_PORT}
+  host: ${MEETRAVEL_RABBITMQ_HOST}
+  username: ${MEETRAVEL_RABBITMQ_USERNAME}
+  password: ${MEETRAVEL_RABBITMQ_PASSWORD}
+  amqp:
+    port: ${MEETRAVEL_RABBITMQ_AMQP_PORT}
+    virtual-host: ${MEETRAVEL_RABBITMQ_AMQP_VIRTUAL_HOST}
+  stomp:
+    port: ${MEETRAVEL_RABBITMQ_STOMP_PORT}

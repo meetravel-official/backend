@@ -1,5 +1,8 @@
 package com.meetravel.global.websocket;
 
+import com.meetravel.global.websocket.properties.RabbitMQAmqpProperties;
+import com.meetravel.global.websocket.properties.RabbitMQProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -10,7 +13,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@RequiredArgsConstructor
 public class RabbitMQConfig {
+    private final RabbitMQProperties rabbitMQProperties;
+    private final RabbitMQAmqpProperties rabbitMQAmqpProperties;
+
     @Bean
     public TopicExchange directExchange() {
         return new TopicExchange("chat.exchange");
@@ -29,11 +36,11 @@ public class RabbitMQConfig {
     @Bean
     public ConnectionFactory rabbitMQConnectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        connectionFactory.setHost("localhost");
-        connectionFactory.setPort(10301);
-        connectionFactory.setVirtualHost("/");
-        connectionFactory.setUsername("admin");
-        connectionFactory.setPassword("#*eB@zd2qbuq6+F_<rJ$");
+        connectionFactory.setHost(rabbitMQProperties.getHost());
+        connectionFactory.setPort(rabbitMQAmqpProperties.getPort());
+        connectionFactory.setVirtualHost(rabbitMQAmqpProperties.getVirtualHost());
+        connectionFactory.setUsername(rabbitMQProperties.getUsername());
+        connectionFactory.setPassword(rabbitMQProperties.getPassword());
 
         return connectionFactory;
     }
