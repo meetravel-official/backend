@@ -32,7 +32,11 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     public static final String[] PERMIT_URL = {
-            "/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/**"
+            "/auth/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-ui.html",
+            "/ws/**"
     };
 
     private static final String[] GetMethodPermitURL = {

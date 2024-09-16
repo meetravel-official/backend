@@ -31,7 +31,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry
                 .setPathMatcher(new AntPathMatcher("."))
-                .enableStompBrokerRelay("/queue", "/topic", "/exchange", "/amq/queue")
+                .enableStompBrokerRelay("/queue", "/topic", "/exchange")
                 .setRelayHost(rabbitMQProperties.getHost())
                 .setRelayPort(rabbitMQStompProperties.getPort())
                 .setClientLogin("admin")
