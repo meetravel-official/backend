@@ -47,7 +47,7 @@ class ChatRoomSocketControllerTest {
                 sessionHandlerAdapter
         ).get(100, TimeUnit.SECONDS);
 
-        session.send("/app/chat/join", new ChatMessage(ChatMessageType.JOIN, 1L, "3705264650@kakao", null));
+        session.send("/app/join", new ChatMessage(ChatMessageType.JOIN, 1L, "3705264650@kakao", null));
 
         session.subscribe("/topic/chat-rooms/1", new StompSessionHandlerAdapter() {
             @Override

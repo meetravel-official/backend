@@ -16,7 +16,7 @@ public class ChatRoomSocketController {
     private final ChatRoomService chatRoomService;
     private final RabbitTemplate rabbitTemplate;
 
-    @MessageMapping("/chat/join")
+    @MessageMapping("join")
     public void joinChatRoom(@Payload ChatMessage chatMessage) {
         String joinedMessage = chatRoomService.getJoinedMessage(
                 chatMessage.getSenderId(),
@@ -25,6 +25,6 @@ public class ChatRoomSocketController {
 
         chatMessage.setMessage(joinedMessage);
 
-        rabbitTemplate.convertAndSend("/topic/chat-rooms/" + chatMessage.getChatRoomId(), chatMessage);
+        rabbitTemplate.convertAndSend("chat.exchange", "join", chatMessage);
     }
 }
