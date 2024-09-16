@@ -8,42 +8,30 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class RabbitMQConfig {
     @Bean
-    public DirectExchange directExchange() {
-        return new DirectExchange("chat.exchange");
+    public TopicExchange directExchange() {
+        return new TopicExchange("chat.exchange");
     }
 
     @Bean
     public Queue queue() {
-        return new Queue("join");
+        return new Queue("chat.queue", true);
     }
 
     @Bean
     public Binding binding() {
-        return BindingBuilder.bind(queue()).to(directExchange()).with("join");
+        return BindingBuilder.bind(queue()).to(directExchange()).with("chat.rooms.*");
     }
 
-    @Primary
     @Bean
     public ConnectionFactory rabbitMQConnectionFactory() {
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setHost("localhost");
         connectionFactory.setPort(10301);
-        connectionFactory.setUsername("admin");
-        connectionFactory.setPassword("#*eB@zd2qbuq6+F_<rJ$");
-
-        return connectionFactory;
-    }
-
-    @Bean
-    public ConnectionFactory rabbitMQAdminConnectionFactory() {
-        CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
-        connectionFactory.setHost("localhost");
-        connectionFactory.setPort(10301);
+        connectionFactory.setVirtualHost("/");
         connectionFactory.setUsername("admin");
         connectionFactory.setPassword("#*eB@zd2qbuq6+F_<rJ$");
 
@@ -61,7 +49,7 @@ public class RabbitMQConfig {
 
     @Bean
     public AmqpAdmin amqpAdmin() {
-        RabbitAdmin rabbitAdmin = new RabbitAdmin(rabbitMQAdminConnectionFactory());
+        RabbitAdmin rabbitAdmin = new RabbitAdmin(rabbitMQConnectionFactory());
         rabbitAdmin.declareExchange(directExchange());
         rabbitAdmin.declareQueue(queue());
         rabbitAdmin.declareBinding(binding());

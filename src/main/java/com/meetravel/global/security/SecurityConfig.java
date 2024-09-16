@@ -71,7 +71,7 @@ public class SecurityConfig {
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
             // 아래 포트 9001인데 application.yaml에서 바뀌면 수정해야함!
-            config.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3030")); // ️ 허용할 origin
+            config.setAllowedOriginPatterns(Collections.singletonList("*")); // ️ 허용할 origin
             config.setAllowCredentials(true);
             return config;
         };
