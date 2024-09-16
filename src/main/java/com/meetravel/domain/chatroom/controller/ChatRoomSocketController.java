@@ -1,10 +1,13 @@
 package com.meetravel.domain.chatroom.controller;
 
+import com.meetravel.domain.chatroom.dto.ChatMessage;
 import com.meetravel.domain.chatroom.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 @RequiredArgsConstructor
@@ -14,17 +17,14 @@ public class ChatRoomSocketController {
     private final RabbitTemplate rabbitTemplate;
 
     @MessageMapping("/chat/join")
-//    @SendTo("/topic/chat-rooms/{chatRoomId}")
-    public void joinChatRoom(
-//            @AuthenticationPrincipal UserDetails userDetails,
-            @DestinationVariable Long chatRoomId
-    ) {
+    public void joinChatRoom(@Payload ChatMessage chatMessage) {
         String joinedMessage = chatRoomService.getJoinedMessage(
-//                userDetails.getUsername(),
-                "1",
-                chatRoomId
+                chatMessage.getSenderId(),
+                chatMessage.getChatRoomId()
         );
 
-        rabbitTemplate.convertAndSend("/chat/exchange", "chat-rooms/" + chatRoomId, joinedMessage);
+        chatMessage.setMessage(joinedMessage);
+
+        rabbitTemplate.convertAndSend("/topic/chat-rooms/" + chatMessage.getChatRoomId(), chatMessage);
     }
 }

@@ -1,5 +1,7 @@
 package com.meetravel.domain.chatroom.controller;
 
+import com.meetravel.domain.chatroom.dto.ChatMessage;
+import com.meetravel.domain.chatroom.enums.ChatMessageType;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -7,7 +9,6 @@ import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
-import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
@@ -27,31 +28,37 @@ class ChatRoomSocketControllerTest {
     @Test
     public void userCanReceiveEnterMessageUponJoiningChatRoom() throws Exception {
         CompletableFuture<StompSession> sessionFuture = new CompletableFuture<>();
-        CompletableFuture<String> messageFuture = new CompletableFuture<>();
+        CompletableFuture<ChatMessage> messageFuture = new CompletableFuture<>();
 
-        StompHeaders headers = new StompHeaders();
-        headers.setDestination("/app/chat/join");
-        headers.add("chatRoomId", "1");
+        StompSessionHandlerAdapter sessionHandlerAdapter = new StompSessionHandlerAdapter() {
+            @Override
+            public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+                sessionFuture.complete(session);
+            }
 
-        StompSession session = stompClient.connect(
-                "ws://localhost:" + port + "/ws/chat",
-                new WebSocketHttpHeaders(),
-                headers,
-                new StompSessionHandlerAdapter(){}
-        ).get(5, TimeUnit.SECONDS);
-
-        session.subscribe("/chat/exchange/chat-rooms/1", new StompSessionHandlerAdapter() {
             @Override
             public void handleFrame(StompHeaders headers, Object payload) {
-                messageFuture.complete((String) payload);
+                messageFuture.complete((ChatMessage) payload);
+            }
+        };
+
+        StompSession session = stompClient.connectAsync(
+                "ws://localhost:" + port + "/ws/chat",
+                sessionHandlerAdapter
+        ).get(100, TimeUnit.SECONDS);
+
+        session.send("/app/chat/join", new ChatMessage(ChatMessageType.JOIN, 1L, "3705264650@kakao", null));
+
+        session.subscribe("/topic/chat-rooms/1", new StompSessionHandlerAdapter() {
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                messageFuture.complete((ChatMessage) payload);
             }
         });
 
-        session.send("/chat/exchange/chat-rooms/1", "");
+        ChatMessage receivedMessage = messageFuture.get(2, TimeUnit.SECONDS);
 
-        String receivedMessage = messageFuture.get(2, TimeUnit.SECONDS);
-
-        assertThat(receivedMessage).isEqualTo("채지원님이 채팅방에 입장하셨습니다.");
+        assertThat(receivedMessage.getMessage()).isEqualTo("채지원님이 채팅방에 입장하셨습니다.");
     }
 
     public ChatRoomSocketControllerTest(
