@@ -53,4 +53,48 @@ public class ChatRoomService {
 
         return new CreateChatRoomResponse(savedChatRoomEntity);
     }
+
+    @Transactional(readOnly = true)
+    public String getJoinedMessage(
+            String userId,
+            Long chatRoomId
+    ) {
+        this.validateUserJoinedChatRoom(userId, chatRoomId);
+
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        String joinedMessage = userEntity.getNickname() + "님이 들어왔습니다.";
+
+        // TODO joinedMessage send event save logic
+
+        return joinedMessage;
+    }
+
+    private void validateUserJoinedChatRoom(
+            String userId,
+            Long chatRoomId
+    ) {
+        if (userId.isEmpty()) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        if (chatRoomId == null || chatRoomId <= 0) {
+            throw new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND);
+        }
+
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
+        UserChatRoomEntity userChatRoomEntity = chatRoomEntity.getUserChatRooms()
+                .stream()
+                .filter(it -> userId.equals(it.getUser().getUserId()))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_ROOM_NOT_JOINED));
+
+        if (userChatRoomEntity.getUser() == null) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+    }
+
 }
