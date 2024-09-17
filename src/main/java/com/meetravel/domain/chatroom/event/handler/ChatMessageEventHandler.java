@@ -10,10 +10,11 @@ import com.meetravel.domain.user.repository.UserRepository;
 import com.meetravel.global.exception.ErrorCode;
 import com.meetravel.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
@@ -22,8 +23,8 @@ public class ChatMessageEventHandler {
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
 
-    @EventListener
     @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleChatMessageEvent(ChatMessageEvent chatMessageEvent) {
         UserEntity userEntity = userRepository.findById(chatMessageEvent.getUserId())
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
