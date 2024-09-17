@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -15,9 +17,12 @@ public class ChatRoomSocketController {
     private final RabbitTemplate rabbitTemplate;
 
     @MessageMapping("chat.join")
-    public void joinChatRoom(@Payload ChatMessage chatMessage) {
+    public void joinChatRoom(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Payload ChatMessage chatMessage
+    ) {
         String joinedMessage = chatRoomService.getJoinedMessage(
-                chatMessage.getSenderId(),
+                userDetails.getUsername(),
                 chatMessage.getChatRoomId()
         );
 

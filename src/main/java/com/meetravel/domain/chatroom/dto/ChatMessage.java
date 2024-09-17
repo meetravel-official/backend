@@ -8,14 +8,12 @@ import lombok.Setter;
 public class ChatMessage {
     private final ChatMessageType type;
     private final Long chatRoomId;
-    private final String senderId;
     @Setter
     private String message;
 
-    public ChatMessage(ChatMessageType type, Long chatRoomId, String senderId, String message) {
+    public ChatMessage(ChatMessageType type, Long chatRoomId, String message) {
         this.type = type;
         this.chatRoomId = chatRoomId;
-        this.senderId = senderId;
         this.message = message;
     }
 }
