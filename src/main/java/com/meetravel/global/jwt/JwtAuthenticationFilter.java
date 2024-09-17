@@ -10,12 +10,15 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -89,6 +92,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public void setAuthentication(String accessToken, boolean isTemporary) {
         Authentication authentication = jwtService.getAuthentication(accessToken, isTemporary);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    @Override
+    public boolean shouldNotFilter(HttpServletRequest request) {
+        return Stream.of(
+                new AntPathRequestMatcher("/error"),
+                new AntPathRequestMatcher("/favicon.ico", HttpMethod.GET.name())
+        ).anyMatch(it -> it.matches(request));
     }
 
     private boolean isNotTemporaryTokenAllowedUrl(String requestUri) {
