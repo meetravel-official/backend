@@ -2,15 +2,13 @@ package com.meetravel.domain.chatroom.controller;
 
 import com.meetravel.domain.chatroom.dto.CreateChatRoomRequest;
 import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
+import com.meetravel.domain.chatroom.dto.GetMyChatRoomResponse;
 import com.meetravel.domain.chatroom.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/chat-rooms")
 @RestController
@@ -28,6 +26,13 @@ public class ChatRoomController implements ChatRoomControllerDoc {
                 userDetails.getUsername(),
                 request.getMatchingFormId()
         );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<GetMyChatRoomResponse> getMyChatRooms(@AuthenticationPrincipal UserDetails userDetails) {
+        GetMyChatRoomResponse response = chatRoomService.getMyChatRooms(userDetails.getUsername());
 
         return ResponseEntity.ok(response);
     }

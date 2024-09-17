@@ -2,6 +2,7 @@ package com.meetravel.domain.chatroom.controller;
 
 import com.meetravel.domain.chatroom.dto.CreateChatRoomRequest;
 import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
+import com.meetravel.domain.chatroom.dto.GetMyChatRoomResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -28,4 +29,17 @@ public interface ChatRoomControllerDoc {
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody CreateChatRoomRequest request
     );
+
+    @Operation(
+            summary = "내 채팅방 목록",
+            description = """
+                    [operation]
+                    - 로그인 한 회원의 채팅방 목록을 보여줍니다.
+
+                    [validation]
+                    - 존재하지 않는 회원의 채팅방 목록은 볼 수 없습니다.
+                    - 매칭 신청서가 연결되지 않은 채팅방은 볼 수 없습니다.
+                    """
+    )
+    ResponseEntity<GetMyChatRoomResponse> getMyChatRooms(@AuthenticationPrincipal UserDetails userDetails);
 }

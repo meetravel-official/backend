@@ -2,11 +2,13 @@ package com.meetravel.domain.chatroom.service;
 
 import com.meetravel.domain.chatroom.dto.ChatMessage;
 import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
+import com.meetravel.domain.chatroom.dto.GetMyChatRoomResponse;
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.domain.chatroom.entity.UserChatRoomEntity;
 import com.meetravel.domain.chatroom.event.model.ChatMessageEvent;
 import com.meetravel.domain.chatroom.repository.ChatRoomRepository;
 import com.meetravel.domain.chatroom.repository.UserChatRoomRepository;
+import com.meetravel.domain.chatroom.vo.ChatRoomPreviewInfo;
 import com.meetravel.domain.matching_form.entity.MatchingFormEntity;
 import com.meetravel.domain.matching_form.repository.MatchingFormRepository;
 import com.meetravel.domain.user.entity.UserEntity;
@@ -19,6 +21,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -74,6 +79,35 @@ public class ChatRoomService {
 
         rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.getChatRoomId(), chatMessage);
         applicationEventPublisher.publishEvent(new ChatMessageEvent(chatMessage, userId));
+    }
+
+    @Transactional(readOnly = true)
+    public GetMyChatRoomResponse getMyChatRooms(String userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        List<ChatRoomPreviewInfo> chatRoomPreviewInfos = userEntity.getUserChatRooms()
+                .stream()
+                .map(userChatRoomEntity -> {
+                    ChatRoomEntity chatRoomEntity = userChatRoomEntity.getChatRoom();
+                    MatchingFormEntity matchingFormEntity = chatRoomEntity.getMatchingForms()
+                            .stream()
+                            .findFirst()
+                            .orElse(null);
+                    if (matchingFormEntity == null) return null;
+
+                    List<UserEntity> joinedUserEntities = chatRoomEntity.getUserChatRooms()
+                            .stream()
+                            .filter(it -> it.getLeaveAt() == null)
+                            .map(UserChatRoomEntity::getUser)
+                            .toList();
+
+                    return new ChatRoomPreviewInfo(chatRoomEntity, matchingFormEntity, joinedUserEntities);
+                })
+                .filter(Objects::nonNull)
+                .toList();
+
+        return new GetMyChatRoomResponse(chatRoomPreviewInfos);
     }
 
     private String getJoinedMessage(
