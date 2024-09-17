@@ -1,5 +1,6 @@
 package com.meetravel.global.websocket;
 
+import com.meetravel.global.websocket.handler.WebSocketErrorHandler;
 import com.meetravel.global.websocket.interceptor.WebSocketInterceptor;
 import com.meetravel.global.websocket.properties.RabbitMQProperties;
 import com.meetravel.global.websocket.properties.RabbitMQStompProperties;
@@ -22,6 +23,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final RabbitMQProperties rabbitMQProperties;
     private final RabbitMQStompProperties rabbitMQStompProperties;
     private final WebSocketInterceptor webSocketInterceptor;
+    private final WebSocketErrorHandler webSocketErrorHandler;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -31,6 +33,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                         "https://cdiptangshu.github.io"
                 )
                 .withSockJS(); // sock.js 미사용 시 비활성화
+        registry.setErrorHandler(webSocketErrorHandler);
     }
 
     @Override
