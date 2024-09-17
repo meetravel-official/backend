@@ -1,5 +1,6 @@
 package com.meetravel.domain.chatroom.service;
 
+import com.meetravel.domain.chatroom.dto.ChatMessage;
 import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.domain.chatroom.entity.UserChatRoomEntity;
@@ -12,6 +13,7 @@ import com.meetravel.domain.user.repository.UserRepository;
 import com.meetravel.global.exception.BadRequestException;
 import com.meetravel.global.exception.ErrorCode;
 import com.meetravel.global.exception.NotFoundException;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class ChatRoomService {
+    private final RabbitTemplate rabbitTemplate;
     private final UserRepository userRepository;
     private final UserChatRoomRepository userChatRoomRepository;
     private final MatchingFormRepository matchingFormRepository;
@@ -54,8 +57,22 @@ public class ChatRoomService {
         return new CreateChatRoomResponse(savedChatRoomEntity);
     }
 
-    @Transactional(readOnly = true)
-    public String getJoinedMessage(
+    @Transactional
+    public void sendJoinedMessage(
+            String userId,
+            ChatMessage chatMessage
+    ) {
+        String joinedMessage = this.getJoinedMessage(
+                userId,
+                chatMessage.getChatRoomId()
+        );
+
+        chatMessage.setMessage(joinedMessage);
+
+        rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.getChatRoomId(), chatMessage);
+    }
+
+    private String getJoinedMessage(
             String userId,
             Long chatRoomId
     ) {
