@@ -30,6 +30,19 @@ public class ChatRoomController implements ChatRoomControllerDoc {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/join/{chatRoomId}")
+    public ResponseEntity<Object> joinChatRoom(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long chatRoomId
+    ) {
+        chatRoomService.joinChatRoom(
+                userDetails.getUsername(),
+                chatRoomId
+        );
+
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public ResponseEntity<GetMyChatRoomResponse> getMyChatRooms(@AuthenticationPrincipal UserDetails userDetails) {
         GetMyChatRoomResponse response = chatRoomService.getMyChatRooms(userDetails.getUsername());

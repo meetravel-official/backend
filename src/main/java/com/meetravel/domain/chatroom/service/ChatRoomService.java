@@ -53,16 +53,38 @@ public class ChatRoomService {
         ChatRoomEntity savedChatRoomEntity = chatRoomRepository.save(new ChatRoomEntity());
 
         matchingFormEntity.joinChatRoom(savedChatRoomEntity);
-
         matchingFormRepository.save(matchingFormEntity);
+
+        return new CreateChatRoomResponse(savedChatRoomEntity);
+    }
+
+    @Transactional
+    public void joinChatRoom(
+            String userId,
+            Long chatRoomId
+    ) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
+        UserChatRoomEntity joinedUserChatRoomEntity = userEntity.getUserChatRooms()
+                .stream()
+                .filter(it -> chatRoomEntity.getId().equals(it.getChatRoom().getId()) && it.getLeaveAt() == null)
+                .findFirst()
+                .orElse(null);
+
+        if (joinedUserChatRoomEntity != null) {
+            throw new BadRequestException(ErrorCode.USER_ROOM_ALREADY_JOINED);
+        }
+
         userChatRoomRepository.save(
                 new UserChatRoomEntity(
                         userEntity,
-                        savedChatRoomEntity
+                        chatRoomEntity
                 )
         );
-
-        return new CreateChatRoomResponse(savedChatRoomEntity);
     }
 
     @Transactional
@@ -154,7 +176,7 @@ public class ChatRoomService {
 
         UserChatRoomEntity userChatRoomEntity = chatRoomEntity.getUserChatRooms()
                 .stream()
-                .filter(it -> userId.equals(it.getUser().getUserId()))
+                .filter(it -> userId.equals(it.getUser().getUserId()) && it.getLeaveAt() == null)
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_ROOM_NOT_JOINED));
 
