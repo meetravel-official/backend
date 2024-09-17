@@ -24,4 +24,15 @@ public class ChatRoomSocketController {
                 chatMessage
         );
     }
+
+    @MessageMapping("chat.send")
+    public void sendChatMessage(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Payload ChatMessage chatMessage
+    ) {
+        chatRoomService.sendChatMessage(
+                userDetails.getUsername(),
+                chatMessage
+        );
+    }
 }

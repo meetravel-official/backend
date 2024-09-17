@@ -77,8 +77,23 @@ public class ChatRoomService {
 
         chatMessage.setMessage(joinedMessage);
 
-        rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.getChatRoomId(), chatMessage);
-        applicationEventPublisher.publishEvent(new ChatMessageEvent(chatMessage, userId));
+        this.sendMessageAndEventPublisher(
+                chatMessage,
+                userId
+        );
+    }
+
+    @Transactional
+    public void sendChatMessage(
+            String userId,
+            ChatMessage chatMessage
+    ) {
+        this.validateUserJoinedChatRoom(userId, chatMessage.getChatRoomId());
+
+        this.sendMessageAndEventPublisher(
+                chatMessage,
+                userId
+        );
     }
 
     @Transactional(readOnly = true)
@@ -146,6 +161,11 @@ public class ChatRoomService {
         if (userChatRoomEntity.getUser() == null) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
         }
+    }
+
+    private void sendMessageAndEventPublisher(ChatMessage chatMessage, String userId) {
+        rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.getChatRoomId(), chatMessage);
+        applicationEventPublisher.publishEvent(new ChatMessageEvent(chatMessage, userId));
     }
 
 }
