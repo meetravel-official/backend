@@ -3,6 +3,7 @@ spring:
     name: meetravel
   profiles:
     default: local
+    active: ${spring.profiles.default}
 
   jpa:
     generate-ddl: false
@@ -58,15 +59,3 @@ server:
 logging:
   level:
     com.meetravel: DEBUG
-
----
-spring:
-  confing:
-    activate:
-      on-profile: "local"
-
----
-spring:
-  confing:
-    activate:
-      on-profile: "prod"
