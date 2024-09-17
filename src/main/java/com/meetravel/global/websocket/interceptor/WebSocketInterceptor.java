@@ -1,12 +1,12 @@
 package com.meetravel.global.websocket.interceptor;
 
-import com.meetravel.global.exception.ErrorCode;
-import com.meetravel.global.exception.UnAuthorizedException;
 import com.meetravel.global.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageDeliveryException;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
@@ -25,8 +25,12 @@ public class WebSocketInterceptor implements ChannelInterceptor {
         if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
             String token = jwtService.getToken(accessor);
 
-            if (token == null || jwtService.getIsTemporary(token)) {
-                throw new UnAuthorizedException(ErrorCode.NOT_TEMPORARY_TOKEN_ALLOWED_URL_EXCEPTION.getMessage());
+            if (token == null || !jwtService.validateToken(token)) {
+                throw new MessageDeliveryException(HttpStatus.UNAUTHORIZED.getReasonPhrase());
+            }
+
+            if (jwtService.getIsTemporary(token)) {
+                throw new MessageDeliveryException(HttpStatus.FORBIDDEN.getReasonPhrase());
             }
 
             Authentication authentication = jwtService.getAuthentication(token, false);
