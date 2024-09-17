@@ -2,12 +2,14 @@ package com.meetravel.domain.chatroom.entity;
 
 import com.meetravel.domain.matching_form.entity.MatchingFormEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(name = "chat_room")
 public class ChatRoomEntity {

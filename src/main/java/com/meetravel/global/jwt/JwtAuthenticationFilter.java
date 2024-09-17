@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = jwtService.getToken(request);
         /** 토큰이 null 이 아니고 유효한 경우 */
-        if (token != null && jwtService.validateToken(token, request)) { // 1. 토큰이 헤더에 실려왔는지, 토큰이 유효한 토큰인지 확인
+        if (token != null && jwtService.validateToken(token)) { // 1. 토큰이 헤더에 실려왔는지, 토큰이 유효한 토큰인지 확인
             /** 토큰이 AT인 경우 */
             if (jwtService.isAccessToken(token)) {
                 boolean isTemporary = jwtService.getIsTemporary(token);

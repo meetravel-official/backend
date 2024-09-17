@@ -12,6 +12,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -108,7 +109,7 @@ public class JwtService {
 
 
     // 토큰 정보를 검증하는 메서드
-    public boolean validateToken(String token, HttpServletRequest request) {
+    public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -153,6 +154,21 @@ public class JwtService {
         }
 
         return null; // 헤더 비어있으면 null 리턴
+    }
+
+    public String getToken(StompHeaderAccessor accessor) {
+        if (accessor == null) return null;
+
+        String authorizationHeader = accessor.getFirstNativeHeader(jwtProperties.getToken().getHeader());
+        if (authorizationHeader == null || authorizationHeader.isEmpty()) {
+            return null;
+        }
+
+        if (authorizationHeader.startsWith("Bearer") && authorizationHeader.length() > 7) {
+            return authorizationHeader.substring(7);
+        }
+
+        return null;
     }
 
     // Authenticaiton 가져오기

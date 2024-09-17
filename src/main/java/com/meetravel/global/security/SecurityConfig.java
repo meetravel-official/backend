@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -31,7 +32,11 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     public static final String[] PERMIT_URL = {
-            "/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html"
+            "/auth/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/swagger-ui.html",
+            "/ws/**"
     };
 
     private static final String[] GetMethodPermitURL = {
@@ -71,7 +76,10 @@ public class SecurityConfig {
             config.setAllowedHeaders(Collections.singletonList("*"));
             config.setAllowedMethods(Collections.singletonList("*"));
             // 아래 포트 9001인데 application.yaml에서 바뀌면 수정해야함!
-            config.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3030")); // ️ 허용할 origin
+            config.setAllowedOriginPatterns(List.of(
+                    "http://localhost:*",
+                    "https://cdiptangshu.github.io"
+            ));
             config.setAllowCredentials(true);
             return config;
         };

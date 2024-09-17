@@ -22,7 +22,8 @@ public class SwaggerConfig {
         SIGN_UP("sign_up", "/signup"),
         USER("user", "/users"),
         ADMIN("admin", "/admin"),
-        MATCHING_FORM("matching_form","/matching-form");
+        MATCHING_FORM("matching_form","/matching-form"),
+        CHAT("chat", "/chat-rooms");
 
         private final String group;
         private final String urlPrefix;
@@ -82,6 +83,15 @@ public class SwaggerConfig {
                 .group(name)
                 .pathsToMatch(ApiUrl.MATCHING_FORM.getUrlPrefix() + "/**")
                 .packagesToScan(BASE_PACKAGE + "." + ApiUrl.MATCHING_FORM.getGroup())
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi chatApi() {
+        return GroupedOpenApi.builder()
+                .group(ApiUrl.CHAT.getGroup())
+                .pathsToMatch(ApiUrl.CHAT.getUrlPrefix() + "/**")
+                .packagesToScan(BASE_PACKAGE + "." + "chatroom")
                 .build();
     }
 

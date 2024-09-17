@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 public class TravelKeywordEntity extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "TRAVEL_KEYWORD_ID")
     private Long id;
 

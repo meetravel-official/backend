@@ -27,6 +27,7 @@ import java.util.List;
 public class MatchingFormEntity extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MATCHING_FORM_ID")
     private Long id;
 
@@ -76,9 +77,12 @@ public class MatchingFormEntity extends BaseEntity {
     @Builder.Default
     private List<TravelKeywordEntity> travelKeywordList = new ArrayList<>();
 
-
     public void addTravelKeyword(TravelKeywordEntity travelKeyword) {
         travelKeywordList.add(travelKeyword);
         travelKeyword.setMatchingForm(this);
+    }
+
+    public void joinChatRoom(ChatRoomEntity chatRoomEntity) {
+        this.chatRoom = chatRoomEntity;
     }
 }
