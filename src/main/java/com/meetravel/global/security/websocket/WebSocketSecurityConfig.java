@@ -1,6 +1,5 @@
 package com.meetravel.global.security.websocket;
 
-import com.meetravel.domain.user.enums.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
