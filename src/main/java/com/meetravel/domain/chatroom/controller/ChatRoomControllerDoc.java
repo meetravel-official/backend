@@ -4,10 +4,12 @@ import com.meetravel.domain.chatroom.dto.CreateChatRoomRequest;
 import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
 import com.meetravel.domain.chatroom.dto.GetMyChatRoomResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @SuppressWarnings(value = "unused")
@@ -28,6 +30,24 @@ public interface ChatRoomControllerDoc {
     ResponseEntity<CreateChatRoomResponse> createChatRoom(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody CreateChatRoomRequest request
+    );
+
+    @Operation(
+            summary = "채팅방 입장",
+            description = """
+                    [operation]
+                    - 채팅방에 입장합니다.
+
+                    [validation]
+                    - 존재하지 않는 회원은 채팅방에 참여할 수 없습니다.
+                    - 존재하지 않는 채팅방에 참여할 수 없습니다.
+                    - 이미 참여중인 채팅방에 다시 참여할 수 없습니다.
+                    """
+    )
+    ResponseEntity<Object> joinChatRoom(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Schema(description = "채팅방 고유 번호")
+            @PathVariable Long chatRoomId
     );
 
     @Operation(

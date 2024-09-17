@@ -30,6 +30,7 @@ public class ChatRoomController implements ChatRoomControllerDoc {
         return ResponseEntity.ok(response);
     }
 
+    @Override
     @PostMapping("/join/{chatRoomId}")
     public ResponseEntity<Object> joinChatRoom(
             @AuthenticationPrincipal UserDetails userDetails,
