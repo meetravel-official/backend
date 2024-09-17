@@ -1,5 +1,6 @@
 package com.meetravel.domain.chatroom.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
@@ -11,9 +12,8 @@ public class CreateChatRoomRequest {
     )
     private final Long matchingFormId;
 
-    public CreateChatRoomRequest(
-            Long matchingFormId
-    ) {
+    @JsonCreator
+    public CreateChatRoomRequest(Long matchingFormId) {
         this.matchingFormId = matchingFormId;
     }
 }
