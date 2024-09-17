@@ -4,6 +4,7 @@ import com.meetravel.domain.chatroom.dto.ChatMessage;
 import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.domain.chatroom.entity.UserChatRoomEntity;
+import com.meetravel.domain.chatroom.event.model.ChatMessageEvent;
 import com.meetravel.domain.chatroom.repository.ChatRoomRepository;
 import com.meetravel.domain.chatroom.repository.UserChatRoomRepository;
 import com.meetravel.domain.matching_form.entity.MatchingFormEntity;
@@ -14,6 +15,7 @@ import com.meetravel.global.exception.BadRequestException;
 import com.meetravel.global.exception.ErrorCode;
 import com.meetravel.global.exception.NotFoundException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChatRoomService {
     private final RabbitTemplate rabbitTemplate;
+    private final ApplicationEventPublisher applicationEventPublisher;
     private final UserRepository userRepository;
     private final UserChatRoomRepository userChatRoomRepository;
     private final MatchingFormRepository matchingFormRepository;
@@ -70,6 +73,7 @@ public class ChatRoomService {
         chatMessage.setMessage(joinedMessage);
 
         rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.getChatRoomId(), chatMessage);
+        applicationEventPublisher.publishEvent(new ChatMessageEvent(chatMessage, userId));
     }
 
     private String getJoinedMessage(
@@ -81,11 +85,7 @@ public class ChatRoomService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        String joinedMessage = userEntity.getNickname() + "님이 들어왔습니다.";
-
-        // TODO joinedMessage send event save logic
-
-        return joinedMessage;
+        return userEntity.getNickname() + "님이 들어왔습니다.";
     }
 
     private void validateUserJoinedChatRoom(

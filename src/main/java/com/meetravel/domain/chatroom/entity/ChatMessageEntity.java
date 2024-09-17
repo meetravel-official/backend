@@ -1,5 +1,6 @@
 package com.meetravel.domain.chatroom.entity;
 
+import com.meetravel.domain.chatroom.enums.ChatMessageType;
 import com.meetravel.domain.user.entity.UserEntity;
 import com.meetravel.global.utils.UUIDGenerator;
 import jakarta.persistence.*;
@@ -25,11 +26,23 @@ public class ChatMessageEntity {
     @Column(name = "MESSAGE", nullable = false, updatable = false)
     private String message;
 
+    @Column(name = "MESSAGE_TYPE", nullable = false, updatable = false)
+    private String messageType;
+
     @Column(name = "CREATED_AT", nullable = false, updatable = false)
     private final LocalDateTime createdAt;
 
-    public ChatMessageEntity() {
+    protected ChatMessageEntity() {
         this.id = UUIDGenerator.newUUID().toString();
         this.createdAt = LocalDateTime.now(ZoneId.of("UTC"));
+    }
+
+    public ChatMessageEntity(UserEntity user, ChatRoomEntity chatRoom, String message, ChatMessageType messageType) {
+        this();
+
+        this.user = user;
+        this.chatRoom = chatRoom;
+        this.message = message;
+        this.messageType = messageType.name();
     }
 }
