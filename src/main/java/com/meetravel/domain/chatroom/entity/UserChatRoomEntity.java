@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Getter
 @Entity
@@ -32,7 +31,7 @@ public class UserChatRoomEntity {
 
     protected UserChatRoomEntity() {
         this.id = 0L;
-        this.joinedAt = LocalDateTime.now(ZoneId.of("UTC"));
+        this.joinedAt = LocalDateTime.now();
     }
 
     public UserChatRoomEntity(UserEntity user, ChatRoomEntity chatRoom) {

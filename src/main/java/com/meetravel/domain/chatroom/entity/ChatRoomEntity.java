@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +28,6 @@ public class ChatRoomEntity {
 
     public ChatRoomEntity() {
         this.id = 0L;
-        this.createdAt = LocalDateTime.now(ZoneId.of("UTC"));
+        this.createdAt = LocalDateTime.now();
     }
 }

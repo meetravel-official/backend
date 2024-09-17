@@ -6,7 +6,6 @@ import com.meetravel.global.utils.UUIDGenerator;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 @Entity
 @Table(name = "chat_message")
@@ -34,7 +33,7 @@ public class ChatMessageEntity {
 
     protected ChatMessageEntity() {
         this.id = UUIDGenerator.newUUID().toString();
-        this.createdAt = LocalDateTime.now(ZoneId.of("UTC"));
+        this.createdAt = LocalDateTime.now();
     }
 
     public ChatMessageEntity(UserEntity user, ChatRoomEntity chatRoom, String message, ChatMessageType messageType) {
