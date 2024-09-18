@@ -126,6 +126,8 @@ public class ChatRoomService {
         List<ChatRoomPreviewInfo> chatRoomPreviewInfos = userEntity.getUserChatRooms()
                 .stream()
                 .map(userChatRoomEntity -> {
+                    if (userChatRoomEntity.getLeaveAt() != null) return null;
+
                     ChatRoomEntity chatRoomEntity = userChatRoomEntity.getChatRoom();
                     MatchingFormEntity matchingFormEntity = chatRoomEntity.getMatchingForms()
                             .stream()

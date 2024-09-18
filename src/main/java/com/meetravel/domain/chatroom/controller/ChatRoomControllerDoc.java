@@ -59,6 +59,7 @@ public interface ChatRoomControllerDoc {
                     [validation]
                     - 존재하지 않는 회원의 채팅방 목록은 볼 수 없습니다.
                     - 매칭 신청서가 연결되지 않은 채팅방은 볼 수 없습니다.
+                    - 입장하지 않은 채팅방은 볼 수 없습니다.
                     """
     )
     ResponseEntity<GetMyChatRoomResponse> getMyChatRooms(@AuthenticationPrincipal UserDetails userDetails);
