@@ -116,6 +116,11 @@ public class ChatRoomService {
 
         joinedUserChatRoomEntity.leave();
         userChatRoomRepository.save(joinedUserChatRoomEntity);
+
+        this.sendLeaveMessage(
+                userEntity.getUserId(),
+                chatRoomEntity.getId()
+        );
     }
 
     @Transactional
@@ -183,6 +188,27 @@ public class ChatRoomService {
         );
     }
 
+    private void sendLeaveMessage(
+            String userId,
+            Long chatRoomId
+    ) {
+        String leftMessage = this.getLeaveMessage(
+                userId,
+                chatRoomId
+        );
+
+        ChatMessage chatMessage = new ChatMessage(
+                ChatMessageType.LEAVE,
+                chatRoomId,
+                leftMessage
+        );
+
+        this.sendMessageAndEventPublisher(
+                chatMessage,
+                userId
+        );
+    }
+
     private String getJoinedMessage(
             String userId,
             Long chatRoomId
@@ -193,6 +219,18 @@ public class ChatRoomService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         return userEntity.getNickname() + "님이 들어왔습니다.";
+    }
+
+    private String getLeaveMessage(
+            String userId,
+            Long chatRoomId
+    ) {
+        this.validateUserLeftChatRoom(userId, chatRoomId);
+
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        return userEntity.getNickname() + "님이 나갔습니다.";
     }
 
     private void validateUserJoinedChatRoom(
@@ -215,6 +253,32 @@ public class ChatRoomService {
                 .filter(it -> userId.equals(it.getUser().getUserId()) && it.getLeaveAt() == null)
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_ROOM_NOT_JOINED));
+
+        if (userChatRoomEntity.getUser() == null) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+    }
+
+    private void validateUserLeftChatRoom(
+            String userId,
+            Long chatRoomId
+    ) {
+        if (userId.isEmpty()) {
+            throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        if (chatRoomId == null || chatRoomId <= 0) {
+            throw new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND);
+        }
+
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
+        UserChatRoomEntity userChatRoomEntity = chatRoomEntity.getUserChatRooms()
+                .stream()
+                .filter(it -> userId.equals(it.getUser().getUserId()) && it.getLeaveAt() != null)
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_ROOM_NOT_LEAVE));
 
         if (userChatRoomEntity.getUser() == null) {
             throw new NotFoundException(ErrorCode.USER_NOT_FOUND);
