@@ -51,6 +51,24 @@ public interface ChatRoomControllerDoc {
     );
 
     @Operation(
+            summary = "채팅방 퇴장",
+            description = """
+                    [operation]
+                    - 입장중인 채팅방을 퇴장합니다.
+
+                    [validation]
+                    - 존재하지 않는 회원은 채팅방을 퇴장할 수 없습니다.
+                    - 존재하지 않는 채팅방을 퇴장할 수 없습니다.
+                    - 입장하지 않은 채팅방을 퇴장할 수 없습니다.
+                    """
+    )
+    ResponseEntity<Object> leaveChatRoom(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Schema(description = "채팅방 고유 번호")
+            @PathVariable Long chatRoomId
+    );
+
+    @Operation(
             summary = "내 채팅방 목록",
             description = """
                     [operation]

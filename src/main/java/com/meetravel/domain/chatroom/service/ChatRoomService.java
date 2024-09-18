@@ -88,6 +88,31 @@ public class ChatRoomService {
     }
 
     @Transactional
+    public void leaveChatRoom(
+            String userId,
+            Long chatRoomId
+    ) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
+        UserChatRoomEntity joinedUserChatRoomEntity = userEntity.getUserChatRooms()
+                .stream()
+                .filter(it -> chatRoomEntity.getId().equals(it.getChatRoom().getId()) && it.getLeaveAt() == null)
+                .findFirst()
+                .orElse(null);
+
+        if (joinedUserChatRoomEntity == null) {
+            throw new BadRequestException(ErrorCode.USER_ROOM_NOT_JOINED);
+        }
+
+        joinedUserChatRoomEntity.leave();
+        userChatRoomRepository.save(joinedUserChatRoomEntity);
+    }
+
+    @Transactional
     public void sendJoinedMessage(
             String userId,
             ChatMessage chatMessage

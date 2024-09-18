@@ -29,6 +29,12 @@ public class UserChatRoomEntity {
     @Column(name = "LEAVE_AT")
     private LocalDateTime leaveAt;
 
+    public void leave() {
+        if (this.leaveAt != null) return;
+
+        this.leaveAt = LocalDateTime.now();
+    }
+
     protected UserChatRoomEntity() {
         this.id = 0L;
         this.joinedAt = LocalDateTime.now();

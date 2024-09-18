@@ -44,6 +44,19 @@ public class ChatRoomController implements ChatRoomControllerDoc {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/leave/{chatRoomId}")
+    public ResponseEntity<Object> leaveChatRoom(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long chatRoomId
+    ) {
+        chatRoomService.leaveChatRoom(
+                userDetails.getUsername(),
+                chatRoomId
+        );
+
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public ResponseEntity<GetMyChatRoomResponse> getMyChatRooms(@AuthenticationPrincipal UserDetails userDetails) {
         GetMyChatRoomResponse response = chatRoomService.getMyChatRooms(userDetails.getUsername());
