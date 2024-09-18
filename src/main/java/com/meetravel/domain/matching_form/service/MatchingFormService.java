@@ -69,7 +69,6 @@ public class MatchingFormService {
             this.addTravelKeyword(matchingForm, keyword);
         }
 
-
     }
 
     /**
@@ -83,6 +82,7 @@ public class MatchingFormService {
                 .keyword(keyword)
                 .build();
 
+        matchingForm.addTravelKeyword(travelKeyword);
         travelKeywordRepository.save(travelKeyword);
     }
 
