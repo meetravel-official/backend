@@ -56,6 +56,7 @@ public interface ChatRoomControllerDoc {
             description = """
                     [operation]
                     - 입장중인 채팅방을 퇴장합니다.
+                    - 채팅방 퇴장 메세지를 발송합니다.
 
                     [validation]
                     - 존재하지 않는 회원은 채팅방을 퇴장할 수 없습니다.
