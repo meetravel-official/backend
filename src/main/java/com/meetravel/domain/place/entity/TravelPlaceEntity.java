@@ -20,7 +20,6 @@ import software.amazon.awssdk.annotations.NotNull;
 public class TravelPlaceEntity extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "PLACE_ID", nullable = false, updatable = false)
     @NotBlank
     private String placeId; // 관광공사 API의 contentId
