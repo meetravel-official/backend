@@ -128,6 +128,10 @@ public class ChatRoomService {
             String userId,
             ChatMessage chatMessage
     ) {
+        if (!ChatMessageType.CHAT.equals(chatMessage.getType())) {
+            throw new BadRequestException(ErrorCode.NOT_VALID_MESSAGE_TYPE);
+        }
+
         this.validateUserJoinedChatRoom(userId, chatMessage.getChatRoomId());
 
         this.sendMessageAndEventPublisher(
