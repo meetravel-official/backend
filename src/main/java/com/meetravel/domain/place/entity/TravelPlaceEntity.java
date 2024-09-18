@@ -2,6 +2,7 @@ package com.meetravel.domain.place.entity;
 
 import com.meetravel.domain.place.enums.PlaceType;
 import com.meetravel.global.audit.BaseEntity;
+import com.meetravel.global.converter.PlaceTypeConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class TravelPlaceEntity extends BaseEntity {
     @Column(name = "PLACE_ID", nullable = false, updatable = false)
     private Long id;
 
+    @Convert(converter = PlaceTypeConverter.class)
     @Column(name = "PLACE_TYPE")
     private PlaceType placeType;
 
