@@ -14,17 +14,6 @@ import org.springframework.stereotype.Controller;
 public class ChatRoomSocketController {
     private final ChatRoomService chatRoomService;
 
-    @MessageMapping("chat.join")
-    public void joinChatRoom(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @Payload ChatMessage chatMessage
-    ) {
-        chatRoomService.sendJoinedMessage(
-                userDetails.getUsername(),
-                chatMessage
-        );
-    }
-
     @MessageMapping("chat.send")
     public void sendChatMessage(
             @AuthenticationPrincipal UserDetails userDetails,

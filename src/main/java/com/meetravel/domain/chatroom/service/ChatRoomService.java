@@ -5,6 +5,7 @@ import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
 import com.meetravel.domain.chatroom.dto.GetMyChatRoomResponse;
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.domain.chatroom.entity.UserChatRoomEntity;
+import com.meetravel.domain.chatroom.enums.ChatMessageType;
 import com.meetravel.domain.chatroom.event.model.ChatMessageEvent;
 import com.meetravel.domain.chatroom.repository.ChatRoomRepository;
 import com.meetravel.domain.chatroom.repository.UserChatRoomRepository;
@@ -85,6 +86,11 @@ public class ChatRoomService {
                         chatRoomEntity
                 )
         );
+
+        this.sendJoinedMessage(
+                userEntity.getUserId(),
+                chatRoomEntity.getId()
+        );
     }
 
     @Transactional
@@ -110,24 +116,6 @@ public class ChatRoomService {
 
         joinedUserChatRoomEntity.leave();
         userChatRoomRepository.save(joinedUserChatRoomEntity);
-    }
-
-    @Transactional
-    public void sendJoinedMessage(
-            String userId,
-            ChatMessage chatMessage
-    ) {
-        String joinedMessage = this.getJoinedMessage(
-                userId,
-                chatMessage.getChatRoomId()
-        );
-
-        chatMessage.setMessage(joinedMessage);
-
-        this.sendMessageAndEventPublisher(
-                chatMessage,
-                userId
-        );
     }
 
     @Transactional
@@ -172,6 +160,27 @@ public class ChatRoomService {
                 .toList();
 
         return new GetMyChatRoomResponse(chatRoomPreviewInfos);
+    }
+
+    private void sendJoinedMessage(
+            String userId,
+            Long chatRoomId
+    ) {
+        String joinedMessage = this.getJoinedMessage(
+                userId,
+                chatRoomId
+        );
+
+        ChatMessage chatMessage = new ChatMessage(
+                ChatMessageType.JOIN,
+                chatRoomId,
+                joinedMessage
+        );
+
+        this.sendMessageAndEventPublisher(
+                chatMessage,
+                userId
+        );
     }
 
     private String getJoinedMessage(

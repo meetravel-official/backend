@@ -37,6 +37,7 @@ public interface ChatRoomControllerDoc {
             description = """
                     [operation]
                     - 채팅방에 입장합니다.
+                    - 채팅방 입장 메세지를 발송합니다.
 
                     [validation]
                     - 존재하지 않는 회원은 채팅방에 참여할 수 없습니다.
