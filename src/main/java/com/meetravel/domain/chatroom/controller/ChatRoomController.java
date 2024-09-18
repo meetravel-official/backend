@@ -44,6 +44,7 @@ public class ChatRoomController implements ChatRoomControllerDoc {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PostMapping("/leave/{chatRoomId}")
     public ResponseEntity<Object> leaveChatRoom(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -57,6 +58,7 @@ public class ChatRoomController implements ChatRoomControllerDoc {
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @GetMapping
     public ResponseEntity<GetMyChatRoomResponse> getMyChatRooms(@AuthenticationPrincipal UserDetails userDetails) {
         GetMyChatRoomResponse response = chatRoomService.getMyChatRooms(userDetails.getUsername());
