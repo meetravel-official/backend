@@ -3,6 +3,7 @@ package com.meetravel.domain.matching_form.service;
 import com.meetravel.domain.matching_form.dto.request.CreateMatchingFormRequest;
 import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
+import com.meetravel.domain.matching_form.dto.response.GetMatchApplicationFormResponse;
 import com.meetravel.domain.matching_form.entity.MatchingFormEntity;
 import com.meetravel.domain.matching_form.entity.TravelKeywordEntity;
 import com.meetravel.domain.matching_form.enums.TravelKeyword;
@@ -21,8 +22,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.util.List;
+import java.util.Map;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+
+import static java.util.Comparator.comparingLong;
+import static java.util.stream.Collectors.*;
 
 
 @Service
@@ -125,4 +131,82 @@ public class MatchingFormService {
 
     }
 
+    @Transactional(readOnly = true)
+    public GetMatchApplicationFormResponse getMatchedApplicationForm(
+            String userId,
+            Long matchingFormId
+    ) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        MatchingFormEntity myMatchingFormEntity = matchingFormRepository.findById(matchingFormId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MATCHING_FORM_NOT_FOUND));
+
+        List<Long> myMatchingFormIds = userEntity.getMatchingFormEntities()
+                .stream()
+                .map(MatchingFormEntity::getId)
+                .toList();
+
+        List<MatchingFormEntity> matchingFormEntities;
+        if ("all".equals(myMatchingFormEntity.getAreaCode())) {
+            matchingFormEntities = matchingFormRepository.findAllByGroupSizeAndGenderRatioAndStartDateBetweenAndIdNotIn(
+                    myMatchingFormEntity.getGroupSize(),
+                    myMatchingFormEntity.getGenderRatio(),
+                    myMatchingFormEntity.getStartDate(),
+                    myMatchingFormEntity.getEndDate().plusDays(1),
+                    myMatchingFormIds
+            );
+        } else {
+            matchingFormEntities = matchingFormRepository.findAllByAreaCodeAndGroupSizeAndGenderRatioAndStartDateBetweenAndIdNotIn(
+                    myMatchingFormEntity.getAreaCode(),
+                    myMatchingFormEntity.getGroupSize(),
+                    myMatchingFormEntity.getGenderRatio(),
+                    myMatchingFormEntity.getStartDate(),
+                    myMatchingFormEntity.getEndDate().plusDays(1),
+                    myMatchingFormIds
+            );
+        }
+
+        List<TravelKeyword> myTravelKeywords = myMatchingFormEntity.getTravelKeywordList()
+                .stream()
+                .map(TravelKeywordEntity::getKeyword)
+                .toList();
+
+        return matchingFormEntities.stream()
+                .collect(toMap(
+                        MatchingFormEntity::getChatRoom,
+                        Function.identity(),
+                        BinaryOperator.minBy(comparingLong(MatchingFormEntity::getId))
+                ))
+                .entrySet()
+                .stream()
+                .filter(entry -> {
+                    List<TravelKeyword> travelKeywords = entry.getValue().getTravelKeywordList()
+                            .stream()
+                            .map(TravelKeywordEntity::getKeyword)
+                            .toList();
+
+                    if (travelKeywords.stream().noneMatch(myTravelKeywords::contains)) {
+                        return false;
+                    }
+
+                    long activeUserCount = entry.getKey().getUserChatRooms()
+                            .stream()
+                            .filter(it -> it.getLeaveAt() == null)
+                            .count();
+
+                    return activeUserCount < entry.getValue().getGroupSize().getNumber();
+                })
+                .min(comparingLong(entry -> {
+                    long activeUserCount = entry.getKey().getUserChatRooms()
+                            .stream()
+                            .filter(it -> it.getLeaveAt() == null)
+                            .count();
+
+                    return (entry.getValue().getGroupSize().getNumber() - activeUserCount) + entry.getValue().getId();
+                }))
+                .map(Map.Entry::getValue)
+                .map(it -> new GetMatchApplicationFormResponse(it.getId()))
+                .orElse(new GetMatchApplicationFormResponse());
+    }
 }

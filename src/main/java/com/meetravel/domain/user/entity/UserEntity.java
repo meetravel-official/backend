@@ -1,6 +1,7 @@
 package com.meetravel.domain.user.entity;
 
 import com.meetravel.domain.chatroom.entity.UserChatRoomEntity;
+import com.meetravel.domain.matching_form.entity.MatchingFormEntity;
 import com.meetravel.domain.matching_form.enums.Gender;
 import com.meetravel.domain.user.enums.*;
 import com.meetravel.global.audit.BaseEntity;
@@ -80,7 +81,12 @@ public class UserEntity extends BaseEntity {
     @Builder.Default
     private List<UserRoleEntity> userRoles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<MatchingFormEntity> matchingFormEntities = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<UserChatRoomEntity> userChatRooms = new ArrayList<>();
 
     // 권한 부여
