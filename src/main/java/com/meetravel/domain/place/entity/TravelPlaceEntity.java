@@ -45,7 +45,7 @@ public class TravelPlaceEntity extends BaseEntity {
 
     @Builder.Default
     @Column(name = "LIKE_CNT")
-    private int likeCount = 0;
+    private long likeCount = 0;
 
     public void incrementLikeCount() {
         this.likeCount++;
