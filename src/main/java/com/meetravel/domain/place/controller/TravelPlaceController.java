@@ -31,7 +31,7 @@ public class TravelPlaceController implements TravelPlaceControllerDoc{
     }
 
     @Override
-    @GetMapping
+    @GetMapping("/reviews/count")
     public ResponseEntity<GetTravelPlaceLikeCountListResponse> getTravelPlaceLikeCount(@RequestParam List<String> placeIds) {
         return ResponseEntity.ok(travelPlaceService.getTravelPlaceLikeCountList(placeIds));
     }
