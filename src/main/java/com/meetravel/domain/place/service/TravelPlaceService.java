@@ -33,7 +33,7 @@ public class TravelPlaceService {
         travelPlace.decrementLikeCount();
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public GetTravelPlaceLikeCountListResponse getTravelPlaceLikeCountList(List<String> placeIds) {
         List<TravelPlaceEntity> travelPlaceEntityList = travelPlaceRepository.findByPlaceIdIn(placeIds);
 
