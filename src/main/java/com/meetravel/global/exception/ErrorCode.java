@@ -26,6 +26,7 @@ public enum ErrorCode {
     USER_ROOM_ALREADY_JOINED(HttpStatus.BAD_REQUEST, "해당 회원이 이미 입장한 채팅방입니다."),
     USER_ROOM_NOT_LEAVE(HttpStatus.BAD_REQUEST, "아직 나가지 않은 채팅방입니다."),
     TRAVEL_DEST_NOT_FOUND(HttpStatus.NOT_FOUND, "목록에 존재하지 않는 여행지입니다."),
+    TRAVEL_PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 여행 정보입니다."),
     MATCHING_FORM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 매칭 신청서입니다."),
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 권한은 목록에 없습니다."),
