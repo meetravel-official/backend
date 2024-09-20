@@ -43,4 +43,16 @@ public class TravelPlaceEntity extends BaseEntity {
     @Column(name = "IMAGE")
     private String imageUrl; // 이미지
 
+    @Builder.Default
+    @Column(name = "LIKE_CNT")
+    private int likeCount = 0;
+
+    public void incrementLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decrementLikeCount() {
+        this.likeCount--;
+    }
+
 }
