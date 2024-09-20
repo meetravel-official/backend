@@ -23,7 +23,8 @@ public class SwaggerConfig {
         USER("user", "/users"),
         ADMIN("admin", "/admin"),
         MATCHING_FORM("matching_form","/matching-form"),
-        CHAT("chat", "/chat-rooms");
+        CHAT("chat", "/chat-rooms"),
+        PLACE("place", "/places");
 
         private final String group;
         private final String urlPrefix;
@@ -94,5 +95,15 @@ public class SwaggerConfig {
                 .packagesToScan(BASE_PACKAGE + "." + "chatroom")
                 .build();
     }
+
+    @Bean
+    public GroupedOpenApi placeApi() {
+        return GroupedOpenApi.builder()
+                .group(ApiUrl.PLACE.getGroup())
+                .pathsToMatch(ApiUrl.PLACE.getUrlPrefix() + "/**")
+                .packagesToScan(BASE_PACKAGE + "." + "place")
+                .build();
+    }
+
 
 }

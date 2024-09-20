@@ -1,28 +1,39 @@
 package com.meetravel.domain.place.controller;
 
+import com.meetravel.domain.place.dto.GetTravelPlaceLikeCountListResponse;
 import com.meetravel.domain.place.service.TravelPlaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/place")
+@RequestMapping("/places")
 public class TravelPlaceController implements TravelPlaceControllerDoc{
 
     private final TravelPlaceService travelPlaceService;
 
     @Override
-    @PostMapping("/review")
-    public void review(@RequestParam Long travelPlaceId) {
-        travelPlaceService.review(travelPlaceId);
+    @PostMapping("/reviews")
+    public void review(@RequestParam String placeId) {
+        travelPlaceService.review(placeId);
     }
 
     @Override
-    @DeleteMapping("/review/cancel")
-    public void cancelReview(@RequestParam Long travelPlaceId) {
-        travelPlaceService.cancelReview(travelPlaceId);
+    @DeleteMapping("/reviews/cancel")
+    public void cancelReview(@RequestParam String placeId) {
+        travelPlaceService.cancelReview(placeId);
+    }
+
+    @Override
+    @GetMapping("/reviews/count")
+    public ResponseEntity<GetTravelPlaceLikeCountListResponse> getTravelPlaceLikeCount(@RequestParam List<String> placeIds) {
+        return ResponseEntity.ok(travelPlaceService.getTravelPlaceLikeCountList(placeIds));
     }
 
 }
