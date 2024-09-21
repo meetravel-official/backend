@@ -1,0 +1,4 @@
+ALTER TABLE meetravel.`user` CHANGE TRAVEL_COUNT TRAVEL_FREQ varchar(10) NULL;
+ALTER TABLE meetravel.`user` MODIFY COLUMN SCHEDULE_TYPE varchar(4) NULL;
+ALTER TABLE meetravel.`user` MODIFY COLUMN PLANNING_TYPE varchar(5) NULL;
+ALTER TABLE meetravel.`user` MODIFY COLUMN MBTI varchar(4) NULL;
