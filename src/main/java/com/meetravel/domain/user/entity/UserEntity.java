@@ -51,7 +51,7 @@ public class UserEntity extends BaseEntity {
     @Column(name = "PROFILE_IMAGE_URL")
     private String profileImageUrl;
 
-    @Column(name = "TRAVEL_COUNT")
+    @Column(name = "TRAVEL_FREQ")
     @Convert(converter = TravelFrequencyConverter.class)
     private TravelFrequency travelFrequency;
 
