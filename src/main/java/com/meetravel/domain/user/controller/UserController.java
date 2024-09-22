@@ -11,6 +11,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -24,23 +26,23 @@ public class UserController implements UserControllerDoc {
 
     @Override
     @GetMapping("/{userId}/my-page")
-    public ResponseEntity<GetMyPageResponse> getMyPage(String userId) {
+    public ResponseEntity<GetMyPageResponse> getMyPage(@AuthenticationPrincipal UserDetails userDetails) {
         log.info("Get MyPage");
-        return ResponseEntity.ok(userService.getMyPage(userId));
+        return ResponseEntity.ok(userService.getMyPage(userDetails.getUsername()));
     }
 
 
     @Override
     @PutMapping("/{userId}/nickname")
-    public void updateNickname(@RequestParam String userId, @RequestBody @Valid UpdateNicknameRequest request) {
+    public void updateNickname(@AuthenticationPrincipal UserDetails userDetails, @RequestBody @Valid UpdateNicknameRequest request) {
         log.info("Update Nickname");
-        userService.updateNickname(userId, request.getNickname());
+        userService.updateNickname(userDetails.getUsername(), request.getNickname());
     }
     @Override
     @PutMapping("/{userId}/info")
-    public void updateMyPageInfo(@RequestParam String userId, @RequestBody @Valid UpdateMyPageInfoRequest request){
+    public void updateMyPageInfo(@AuthenticationPrincipal UserDetails userDetails, @RequestBody @Valid UpdateMyPageInfoRequest request){
         log.info("Update MyPageInfo");
-        userService.updateMyPageInfo(userId, request);
+        userService.updateMyPageInfo(userDetails.getUsername(), request);
     }
 
     /**
@@ -58,9 +60,9 @@ public class UserController implements UserControllerDoc {
 
     @Override
     @DeleteMapping("/delete")
-    public void deleteUser(@RequestParam String userId) {
+    public void deleteUser(@AuthenticationPrincipal UserDetails userDetails) {
         log.info("Delete User");
-        userService.deleteUser(userId);
+        userService.deleteUser(userDetails.getUsername());
     }
 
 
