@@ -77,6 +77,14 @@ public class SignUpService {
     }
 
     /**
+     * 닉네임 중복확인
+     */
+    @Transactional(readOnly = true)
+    public boolean isNicknameDuplicate(String nickName) {
+        return userRepository.findByNickname(nickName).isPresent();
+    }
+
+    /**
      * 회원 권한 부여 (일반 사용자)
      *
      * @param user
