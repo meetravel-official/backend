@@ -181,12 +181,16 @@ public class MatchingFormService {
                 .entrySet()
                 .stream()
                 .filter(entry -> {
+                    if (entry.getKey() == null || entry.getValue() == null) {
+                        return false;
+                    }
+
                     List<TravelKeyword> travelKeywords = entry.getValue().getTravelKeywordList()
                             .stream()
                             .map(TravelKeywordEntity::getKeyword)
                             .toList();
 
-                    if (travelKeywords.stream().noneMatch(myTravelKeywords::contains)) {
+                    if (travelKeywords.isEmpty() || travelKeywords.stream().noneMatch(myTravelKeywords::contains)) {
                         return false;
                     }
 
