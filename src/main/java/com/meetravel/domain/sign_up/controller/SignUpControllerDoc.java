@@ -4,6 +4,7 @@ import com.meetravel.domain.sign_up.dto.request.SignUpRequest;
 import com.meetravel.domain.sign_up.dto.response.GetSignUpInfoList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "회원가입 관련 API")
 public interface SignUpControllerDoc {
     @Operation(summary = "회원가입", description = "회원가입을 진행합니다.")
-    void signUp(@RequestBody @Valid SignUpRequest signUpRequest);
+    void signUp(@RequestBody @Valid SignUpRequest signUpRequest, HttpServletResponse response);
 
     @Operation(summary = "닉네임 중복 확인", description = "닉네임 중복 확인을 진행합니다.")
     ResponseEntity<Boolean> checkNicknameDuplicate(@RequestParam String nickName);
