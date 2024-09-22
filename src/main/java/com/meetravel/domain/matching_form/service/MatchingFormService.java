@@ -207,7 +207,7 @@ public class MatchingFormService {
                             .filter(it -> it.getLeaveAt() == null)
                             .count();
 
-                    return (entry.getValue().getGroupSize().getNumber() - activeUserCount) + entry.getValue().getId();
+                    return entry.getValue().getStartDate().toEpochDay() + (entry.getValue().getGroupSize().getNumber() - activeUserCount) + entry.getValue().getId();
                 }))
                 .map(Map.Entry::getValue)
                 .map(it -> new GetMatchApplicationFormResponse(it.getId()))
