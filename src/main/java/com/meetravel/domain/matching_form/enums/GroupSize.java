@@ -9,12 +9,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum GroupSize implements BaseEnum {
-    FOUR_PEOPLE("4명"),
-    SIX_PEOPLE("6명"),
-    EIGHT_PEOPLE("8명");
+    FOUR_PEOPLE("4명", 4),
+    SIX_PEOPLE("6명", 6),
+    EIGHT_PEOPLE("8명", 8);
 
     @JsonValue
     private final String value;
+    private final int number;
 
     @JsonCreator
     public static GroupSize fromValueToEnum(String value) {
