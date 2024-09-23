@@ -1,5 +1,6 @@
 package com.meetravel.domain.matching_form.service;
 
+import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.domain.matching_form.dto.request.CreateMatchingFormRequest;
 import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
@@ -15,18 +16,23 @@ import com.meetravel.domain.tour_api.TourApiDetailAreaResponse;
 
 import com.meetravel.domain.user.entity.UserEntity;
 import com.meetravel.domain.user.repository.UserRepository;
+import com.meetravel.global.exception.BadRequestException;
 import com.meetravel.global.exception.ErrorCode;
 import com.meetravel.global.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
+import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.*;
 
@@ -142,6 +148,10 @@ public class MatchingFormService {
         MatchingFormEntity myMatchingFormEntity = matchingFormRepository.findById(matchingFormId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.MATCHING_FORM_NOT_FOUND));
 
+        if (myMatchingFormEntity.getChatRoom() != null) {
+            throw new BadRequestException(ErrorCode.ALREADY_EXISTS_ROOM_WITH_MATCHING_FORM);
+        }
+
         List<Long> myMatchingFormIds = userEntity.getMatchingFormEntities()
                 .stream()
                 .map(MatchingFormEntity::getId)
@@ -181,11 +191,14 @@ public class MatchingFormService {
                 .entrySet()
                 .stream()
                 .filter(entry -> {
-                    if (entry.getKey() == null || entry.getValue() == null) {
+                    ChatRoomEntity chatRoomEntity = entry.getKey();
+                    MatchingFormEntity matchingFormEntity = entry.getValue();
+
+                    if (chatRoomEntity == null || matchingFormEntity == null) {
                         return false;
                     }
 
-                    List<TravelKeyword> travelKeywords = entry.getValue().getTravelKeywordList()
+                    List<TravelKeyword> travelKeywords = matchingFormEntity.getTravelKeywordList()
                             .stream()
                             .map(TravelKeywordEntity::getKeyword)
                             .toList();
@@ -194,23 +207,37 @@ public class MatchingFormService {
                         return false;
                     }
 
-                    long activeUserCount = entry.getKey().getUserChatRooms()
+                    long joinedUserCount = chatRoomEntity.getUserChatRooms()
                             .stream()
                             .filter(it -> it.getLeaveAt() == null)
                             .count();
 
-                    return activeUserCount < entry.getValue().getGroupSize().getNumber();
+                    long remainingUserCount = matchingFormEntity.getGroupSize().getNumber() - joinedUserCount;
+                    return remainingUserCount <= matchingFormEntity.getGroupSize().getNumber();
                 })
-                .min(comparingLong(entry -> {
-                    long activeUserCount = entry.getKey().getUserChatRooms()
+                .map(entry -> {
+                    ChatRoomEntity chatRoomEntity = entry.getKey();
+                    MatchingFormEntity matchingFormEntity = entry.getValue();
+
+                    long joinedUserCount = chatRoomEntity.getUserChatRooms()
                             .stream()
                             .filter(it -> it.getLeaveAt() == null)
                             .count();
 
-                    return entry.getValue().getStartDate().toEpochDay() + (entry.getValue().getGroupSize().getNumber() - activeUserCount) + entry.getValue().getId();
-                }))
-                .map(Map.Entry::getValue)
-                .map(it -> new GetMatchApplicationFormResponse(it.getId()))
+                    long remainingUserCount = matchingFormEntity.getGroupSize().getNumber() - joinedUserCount;
+
+                    return new AbstractMap.SimpleEntry<>(
+                            entry,
+                            Triple.of(remainingUserCount, matchingFormEntity.getStartDate(), matchingFormEntity.getId())
+                    );
+                })
+                .sorted(comparing((Map.Entry<Map.Entry<ChatRoomEntity, MatchingFormEntity>, Triple<Long, LocalDate, Long>> entry) -> entry.getValue().getLeft())
+                                .thenComparing(entry -> entry.getValue().getMiddle())
+                                .thenComparing(entry -> entry.getValue().getRight())
+                )
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .map(it -> new GetMatchApplicationFormResponse(it.getValue().getId()))
                 .orElse(new GetMatchApplicationFormResponse());
     }
 }
