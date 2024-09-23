@@ -23,9 +23,9 @@ public class MatchingFormController implements MatchingFormControllerDoc {
 
     @Override
     @PostMapping("/{userId}")
-    public void createMatchingApplicationForm(@PathVariable String userId,
+    public void createMatchingApplicationForm(@AuthenticationPrincipal UserDetails userDetails,
                                               @RequestBody @Valid CreateMatchingFormRequest request) {
-        matchingFormService.createMatchingForm(userId, request);
+        matchingFormService.createMatchingForm(userDetails.getUsername(), request);
     }
 
     @Override
