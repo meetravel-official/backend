@@ -40,6 +40,7 @@ public class MatchingFormController implements MatchingFormControllerDoc {
         return matchingFormService.getDetailArea(code);
     }
 
+    @Override
     @GetMapping("/match/{matchingFormId}")
     public ResponseEntity<GetMatchApplicationFormResponse> getMatchedApplicationForm(
             @AuthenticationPrincipal UserDetails userDetails,
