@@ -1,6 +1,7 @@
 package com.meetravel.domain.chatroom.service;
 
 import com.meetravel.domain.chatroom.dto.ChatMessage;
+import com.meetravel.domain.chatroom.dto.ChatSendRequest;
 import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
 import com.meetravel.domain.chatroom.dto.GetMyChatRoomResponse;
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
@@ -126,13 +127,15 @@ public class ChatRoomService {
     @Transactional
     public void sendChatMessage(
             String userId,
-            ChatMessage chatMessage
+            ChatSendRequest chatSendRequest
     ) {
-        if (!ChatMessageType.CHAT.equals(chatMessage.getType())) {
-            throw new BadRequestException(ErrorCode.NOT_VALID_MESSAGE_TYPE);
-        }
+        this.validateUserJoinedChatRoom(userId, chatSendRequest.chatRoomId());
 
-        this.validateUserJoinedChatRoom(userId, chatMessage.getChatRoomId());
+        ChatMessage chatMessage = new ChatMessage(
+                ChatMessageType.CHAT,
+                chatSendRequest.chatRoomId(),
+                chatSendRequest.message()
+        );
 
         this.sendMessageAndEventPublisher(
                 chatMessage,
