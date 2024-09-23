@@ -132,15 +132,13 @@ public class ChatRoomService {
         this.validateUserJoinedChatRoom(userId, chatSendRequest.chatRoomId());
 
         ChatMessage chatMessage = new ChatMessage(
-                ChatMessageType.CHAT,
+                userId,
                 chatSendRequest.chatRoomId(),
+                ChatMessageType.CHAT,
                 chatSendRequest.message()
         );
 
-        this.sendMessageAndEventPublisher(
-                chatMessage,
-                userId
-        );
+        this.sendMessageAndEventPublisher(chatMessage);
     }
 
     @Transactional(readOnly = true)
@@ -184,15 +182,13 @@ public class ChatRoomService {
         );
 
         ChatMessage chatMessage = new ChatMessage(
-                ChatMessageType.JOIN,
+                userId,
                 chatRoomId,
+                ChatMessageType.JOIN,
                 joinedMessage
         );
 
-        this.sendMessageAndEventPublisher(
-                chatMessage,
-                userId
-        );
+        this.sendMessageAndEventPublisher(chatMessage);
     }
 
     private void sendLeaveMessage(
@@ -205,15 +201,13 @@ public class ChatRoomService {
         );
 
         ChatMessage chatMessage = new ChatMessage(
-                ChatMessageType.LEAVE,
+                userId,
                 chatRoomId,
+                ChatMessageType.LEAVE,
                 leftMessage
         );
 
-        this.sendMessageAndEventPublisher(
-                chatMessage,
-                userId
-        );
+        this.sendMessageAndEventPublisher(chatMessage);
     }
 
     private String getJoinedMessage(
@@ -292,9 +286,9 @@ public class ChatRoomService {
         }
     }
 
-    private void sendMessageAndEventPublisher(ChatMessage chatMessage, String userId) {
-        rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.getChatRoomId(), chatMessage);
-        applicationEventPublisher.publishEvent(new ChatMessageEvent(chatMessage, userId));
+    private void sendMessageAndEventPublisher(ChatMessage chatMessage) {
+        rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.chatRoomId(), chatMessage);
+        applicationEventPublisher.publishEvent(new ChatMessageEvent(chatMessage));
     }
 
 }
