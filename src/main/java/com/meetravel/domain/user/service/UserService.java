@@ -1,5 +1,6 @@
 package com.meetravel.domain.user.service;
 
+import com.meetravel.domain.auth.service.KakaoAuthFeignClient;
 import com.meetravel.domain.token.service.RefreshTokenService;
 import com.meetravel.domain.user.dto.request.UpdateMyPageInfoRequest;
 import com.meetravel.domain.user.dto.response.GetMyPageResponse;
@@ -9,6 +10,7 @@ import com.meetravel.global.exception.ErrorCode;
 import com.meetravel.global.exception.NotFoundException;
 import com.meetravel.global.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
     private final JwtService jwtService;
+    private final KakaoAuthFeignClient kakaoAuthFeignClient;
+
+    @Value("${auth.kakao.admin_key}")
+    private String adminKey;
+
 
     /**
      * 마이페이지 조회
@@ -95,6 +102,10 @@ public class UserService {
     public void deleteUser(String userId) {
         UserEntity user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        // 카카오 연결 끊기
+        String authorizationHeader = "KakaoAK " + adminKey;
+        kakaoAuthFeignClient.unlinkUser(authorizationHeader);
 
         userRepository.delete(user);
     }
