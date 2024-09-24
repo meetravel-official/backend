@@ -29,5 +29,5 @@ public interface UserControllerDoc {
     void logout(HttpServletRequest request);
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 진행합니다.")
-    void deleteUser(@RequestParam String userId) ;
+    void deleteUser(@AuthenticationPrincipal UserDetails userDetails) ;
 }

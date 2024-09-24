@@ -35,8 +35,7 @@ public class SecurityConfig {
             "/swagger-ui/**",
             "/v3/api-docs/**",
             "/swagger-ui.html",
-            "/ws/**",
-            "/users/delete"
+            "/ws/**"
     };
 
     private static final String[] GetMethodPermitURL = {
