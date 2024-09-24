@@ -29,6 +29,7 @@ auth:
     client_id: ${KAKAO_CLIENT_ID} # Client Id
     client_secret: ${KAKAO_CLIENT_SECRET} # Client Secret ?
     redirect_uri: ${KAKAO_REDIRECTED_URI}
+    admin_key: ${KAKAO_ADMIN_KEY}
     content_type: application/x-www-form-urlencoded
 
 springdoc:
