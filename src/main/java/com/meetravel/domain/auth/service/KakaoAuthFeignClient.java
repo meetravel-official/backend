@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Component
@@ -21,7 +20,4 @@ public interface KakaoAuthFeignClient {
 
     @PostMapping(value = "/oauth/tokeninfo", consumes = "application/x-www-form-urlencoded;charset=utf-8")
     KakaoToken.IdToken getIdTokenInfo(@RequestParam("id_token") String idToken);
-
-    @PostMapping("/v1/user/unlink")
-    void unlinkUser(@RequestHeader("Authorization") String accessToken);
 }

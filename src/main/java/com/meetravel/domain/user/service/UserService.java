@@ -1,6 +1,6 @@
 package com.meetravel.domain.user.service;
 
-import com.meetravel.domain.auth.service.KakaoAuthFeignClient;
+import com.meetravel.domain.auth.service.KakaoApiFeignClient;
 import com.meetravel.domain.token.service.RefreshTokenService;
 import com.meetravel.domain.user.dto.request.UpdateMyPageInfoRequest;
 import com.meetravel.domain.user.dto.response.GetMyPageResponse;
@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
     private final JwtService jwtService;
-    private final KakaoAuthFeignClient kakaoAuthFeignClient;
+    private final KakaoApiFeignClient kakaoApiFeignClient;
 
     @Value("${auth.kakao.admin_key}")
     private String adminKey;
@@ -105,7 +103,10 @@ public class UserService {
 
         // 카카오 연결 끊기
         String authorizationHeader = "KakaoAK " + adminKey;
-        kakaoAuthFeignClient.unlinkUser(authorizationHeader);
+
+        Long kakaoUserId = Long.valueOf(user.getUserId().split("@")[0]); // '@kakao를 제외한 고유번호 추출'
+
+        kakaoApiFeignClient.unlinkUser(authorizationHeader, "user_id", kakaoUserId);
 
         userRepository.delete(user);
     }
