@@ -60,9 +60,9 @@ public class UserController implements UserControllerDoc {
 
     @Override
     @DeleteMapping("/delete")
-    public void deleteUser(@AuthenticationPrincipal UserDetails userDetails) {
+    public void deleteUser(@RequestParam String userId) {
         log.info("Delete User");
-        userService.deleteUser(userDetails.getUsername());
+        userService.deleteUser(userId);
     }
 
 

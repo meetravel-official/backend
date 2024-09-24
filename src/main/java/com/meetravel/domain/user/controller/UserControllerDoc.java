@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "사용자(유저) API")
 public interface UserControllerDoc {
@@ -28,5 +29,5 @@ public interface UserControllerDoc {
     void logout(HttpServletRequest request);
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴를 진행합니다.")
-    void deleteUser(@AuthenticationPrincipal UserDetails userDetails) ;
+    void deleteUser(@RequestParam String userId) ;
 }
