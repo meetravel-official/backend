@@ -103,7 +103,7 @@ public class MatchingFormService {
         int numOfRows = 17; // 충분한 수 넣어줌
         int pageNo = 1;
         String mobileOS = "ETC";
-        String mobileApp = "meetravel";
+        String mobileApp = "미트래블";
         String _type = "json";
 
         TourApiAreaResponse tourApiAreaResponse = tourApiAreaFeginClient.getArea(numOfRows, pageNo, mobileOS, mobileApp, _type, serviceKey);
@@ -122,7 +122,7 @@ public class MatchingFormService {
         int numOfRows = 17; // 충분한 수 넣어줌
         int pageNo = 1;
         String mobileOS = "ETC";
-        String mobileApp = "meetravel";
+        String mobileApp = "미트래블";
         String _type = "json";
         TourApiDetailAreaResponse tourApiDetailAreaResponse = tourApiAreaFeginClient.getDetailArea(numOfRows, pageNo, mobileOS, mobileApp, code, _type, serviceKey);
 
