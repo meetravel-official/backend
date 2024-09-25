@@ -287,7 +287,7 @@ public class ChatRoomService {
     }
 
     private void sendMessageAndEventPublisher(ChatMessage chatMessage) {
-        rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.chatRoomId(), chatMessage);
+        rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.getChatRoomId(), chatMessage);
         applicationEventPublisher.publishEvent(new ChatMessageEvent(chatMessage));
     }
 

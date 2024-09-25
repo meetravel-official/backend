@@ -12,9 +12,9 @@ public class ChatMessageEvent {
     private final ChatMessageType chatMessageType;
 
     public ChatMessageEvent(ChatMessage chatMessage) {
-        this.chatRoomId = chatMessage.chatRoomId();
-        this.userId = chatMessage.userId();
-        this.message = chatMessage.message();
-        this.chatMessageType = chatMessage.type();
+        this.chatRoomId = chatMessage.getChatRoomId();
+        this.userId = chatMessage.getUserId();
+        this.message = chatMessage.getMessage();
+        this.chatMessageType = chatMessage.getType();
     }
 }
