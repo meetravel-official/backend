@@ -78,7 +78,9 @@ public class SecurityConfig {
             config.setAllowedMethods(Collections.singletonList("*"));
             // 아래 포트 9001인데 application.yaml에서 바뀌면 수정해야함!
             config.setAllowedOriginPatterns(List.of(
-                    "http://localhost:*",
+                    "http://localhost:3030",
+                    "https://dev.meetravel.life",
+                    "https://meetravel.life",
                     "https://cdiptangshu.github.io"
             ));
             config.setAllowCredentials(true);
