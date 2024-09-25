@@ -1,5 +1,6 @@
 package com.meetravel.domain.user.dto.response;
 
+import com.meetravel.domain.matching_form.enums.Gender;
 import com.meetravel.domain.user.enums.MBTI;
 import com.meetravel.domain.user.enums.PlanningType;
 import com.meetravel.domain.user.enums.ScheduleType;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 public class GetMyPageResponse {
     private String profileImageUrl;
     private String nickname;
+    private Gender gender;
     private LocalDate birthDate;
     private TravelFrequency travelFrequency;
     private PlanningType planningType;
