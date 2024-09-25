@@ -1,6 +1,6 @@
 package com.meetravel.domain.chatroom.controller;
 
-import com.meetravel.domain.chatroom.dto.ChatMessage;
+import com.meetravel.domain.chatroom.dto.ChatSendRequest;
 import com.meetravel.domain.chatroom.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,11 +17,11 @@ public class ChatRoomSocketController {
     @MessageMapping("chat.send")
     public void sendChatMessage(
             @AuthenticationPrincipal UserDetails userDetails,
-            @Payload ChatMessage chatMessage
+            @Payload ChatSendRequest chatSendRequest
     ) {
         chatRoomService.sendChatMessage(
                 userDetails.getUsername(),
-                chatMessage
+                chatSendRequest
         );
     }
 }

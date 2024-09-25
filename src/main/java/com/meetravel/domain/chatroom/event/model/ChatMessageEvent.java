@@ -11,9 +11,9 @@ public class ChatMessageEvent {
     private final String message;
     private final ChatMessageType chatMessageType;
 
-    public ChatMessageEvent(ChatMessage chatMessage, String userId) {
+    public ChatMessageEvent(ChatMessage chatMessage) {
         this.chatRoomId = chatMessage.getChatRoomId();
-        this.userId = userId;
+        this.userId = chatMessage.getUserId();
         this.message = chatMessage.getMessage();
         this.chatMessageType = chatMessage.getType();
     }

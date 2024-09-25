@@ -1,6 +1,7 @@
 package com.meetravel.domain.chatroom.service;
 
 import com.meetravel.domain.chatroom.dto.ChatMessage;
+import com.meetravel.domain.chatroom.dto.ChatSendRequest;
 import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
 import com.meetravel.domain.chatroom.dto.GetMyChatRoomResponse;
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
@@ -126,18 +127,18 @@ public class ChatRoomService {
     @Transactional
     public void sendChatMessage(
             String userId,
-            ChatMessage chatMessage
+            ChatSendRequest chatSendRequest
     ) {
-        if (!ChatMessageType.CHAT.equals(chatMessage.getType())) {
-            throw new BadRequestException(ErrorCode.NOT_VALID_MESSAGE_TYPE);
-        }
+        this.validateUserJoinedChatRoom(userId, chatSendRequest.chatRoomId());
 
-        this.validateUserJoinedChatRoom(userId, chatMessage.getChatRoomId());
-
-        this.sendMessageAndEventPublisher(
-                chatMessage,
-                userId
+        ChatMessage chatMessage = new ChatMessage(
+                userId,
+                chatSendRequest.chatRoomId(),
+                ChatMessageType.CHAT,
+                chatSendRequest.message()
         );
+
+        this.sendMessageAndEventPublisher(chatMessage);
     }
 
     @Transactional(readOnly = true)
@@ -181,15 +182,13 @@ public class ChatRoomService {
         );
 
         ChatMessage chatMessage = new ChatMessage(
-                ChatMessageType.JOIN,
+                userId,
                 chatRoomId,
+                ChatMessageType.JOIN,
                 joinedMessage
         );
 
-        this.sendMessageAndEventPublisher(
-                chatMessage,
-                userId
-        );
+        this.sendMessageAndEventPublisher(chatMessage);
     }
 
     private void sendLeaveMessage(
@@ -202,15 +201,13 @@ public class ChatRoomService {
         );
 
         ChatMessage chatMessage = new ChatMessage(
-                ChatMessageType.LEAVE,
+                userId,
                 chatRoomId,
+                ChatMessageType.LEAVE,
                 leftMessage
         );
 
-        this.sendMessageAndEventPublisher(
-                chatMessage,
-                userId
-        );
+        this.sendMessageAndEventPublisher(chatMessage);
     }
 
     private String getJoinedMessage(
@@ -289,9 +286,9 @@ public class ChatRoomService {
         }
     }
 
-    private void sendMessageAndEventPublisher(ChatMessage chatMessage, String userId) {
+    private void sendMessageAndEventPublisher(ChatMessage chatMessage) {
         rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.getChatRoomId(), chatMessage);
-        applicationEventPublisher.publishEvent(new ChatMessageEvent(chatMessage, userId));
+        applicationEventPublisher.publishEvent(new ChatMessageEvent(chatMessage));
     }
 
 }
