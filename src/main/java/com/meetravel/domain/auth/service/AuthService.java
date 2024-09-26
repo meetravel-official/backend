@@ -84,11 +84,11 @@ public class AuthService {
      * @param authorizationCode
      * @return
      */
-    private KakaoToken getKakaoToken(String authorizationCode, String redirectUrl) {
+    private KakaoToken getKakaoToken(String authorizationCode, String redirectUri) {
         MultiValueMap<String, String> kakaoTokenRequestBody = new LinkedMultiValueMap<>();
         kakaoTokenRequestBody.add("grant_type", kakaoTokenRequestProperties.getGrantType());
         kakaoTokenRequestBody.add("client_id", kakaoTokenRequestProperties.getClientId());
-        kakaoTokenRequestBody.add("redirect_uri", redirectUrl);
+        kakaoTokenRequestBody.add("redirect_uri", redirectUri);
         kakaoTokenRequestBody.add("client_secret", kakaoTokenRequestProperties.getClientSecret());
         kakaoTokenRequestBody.add("code", authorizationCode);
 
