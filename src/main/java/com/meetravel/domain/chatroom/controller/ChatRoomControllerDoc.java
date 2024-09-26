@@ -3,6 +3,7 @@ package com.meetravel.domain.chatroom.controller;
 import com.meetravel.domain.chatroom.dto.CreateChatRoomRequest;
 import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
 import com.meetravel.domain.chatroom.dto.GetMyChatRoomResponse;
+import com.meetravel.domain.chatroom.dto.GetUserListChatRoomResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -83,4 +84,21 @@ public interface ChatRoomControllerDoc {
                     """
     )
     ResponseEntity<GetMyChatRoomResponse> getMyChatRooms(@AuthenticationPrincipal UserDetails userDetails);
+
+    @Operation(
+            summary = "채팅방 입장 인원 목록",
+            description = """
+                    [operation]
+                    - 입장한 채팅방의 입장 중인 인원을 보여줍니다.
+                    
+                    [validation]
+                    - 존재하지 않는 채팅방의 인원 목록은 볼 수 없습니다.
+                    - 입장하지 않은 채팅방의 인원 목록은 볼 수 없습니다.
+                    """
+    )
+    ResponseEntity<GetUserListChatRoomResponse> getUsersWithChatRoom(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Schema(description = "채팅방 고유 번호")
+            @PathVariable Long chatRoomId
+    );
 }

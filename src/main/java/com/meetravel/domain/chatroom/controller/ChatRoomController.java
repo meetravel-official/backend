@@ -3,6 +3,7 @@ package com.meetravel.domain.chatroom.controller;
 import com.meetravel.domain.chatroom.dto.CreateChatRoomRequest;
 import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
 import com.meetravel.domain.chatroom.dto.GetMyChatRoomResponse;
+import com.meetravel.domain.chatroom.dto.GetUserListChatRoomResponse;
 import com.meetravel.domain.chatroom.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +63,20 @@ public class ChatRoomController implements ChatRoomControllerDoc {
     @GetMapping
     public ResponseEntity<GetMyChatRoomResponse> getMyChatRooms(@AuthenticationPrincipal UserDetails userDetails) {
         GetMyChatRoomResponse response = chatRoomService.getMyChatRooms(userDetails.getUsername());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/{chatRoomId}/users")
+    public ResponseEntity<GetUserListChatRoomResponse> getUsersWithChatRoom(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long chatRoomId
+    ) {
+        GetUserListChatRoomResponse response = chatRoomService.getUsersWithChatRoom(
+                userDetails.getUsername(),
+                chatRoomId
+        );
 
         return ResponseEntity.ok(response);
     }

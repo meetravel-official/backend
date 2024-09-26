@@ -1,9 +1,6 @@
 package com.meetravel.domain.chatroom.service;
 
-import com.meetravel.domain.chatroom.dto.ChatMessage;
-import com.meetravel.domain.chatroom.dto.ChatSendRequest;
-import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
-import com.meetravel.domain.chatroom.dto.GetMyChatRoomResponse;
+import com.meetravel.domain.chatroom.dto.*;
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.domain.chatroom.entity.UserChatRoomEntity;
 import com.meetravel.domain.chatroom.enums.ChatMessageType;
@@ -170,6 +167,36 @@ public class ChatRoomService {
                 .toList();
 
         return new GetMyChatRoomResponse(chatRoomPreviewInfos);
+    }
+
+    @Transactional(readOnly = true)
+    public GetUserListChatRoomResponse getUsersWithChatRoom(
+            String userId,
+            Long chatRoomId
+    ) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
+        UserChatRoomEntity joinedUserChatRoomEntity = userEntity.getUserChatRooms()
+                .stream()
+                .filter(it -> chatRoomEntity.getId().equals(it.getChatRoom().getId()) && it.getLeaveAt() == null)
+                .findFirst()
+                .orElse(null);
+
+        if (joinedUserChatRoomEntity == null) {
+            throw new BadRequestException(ErrorCode.USER_ROOM_NOT_JOINED);
+        }
+
+        List<UserEntity> userEntities = chatRoomEntity.getUserChatRooms()
+                .stream()
+                .filter(it -> it.getLeaveAt() == null)
+                .map(UserChatRoomEntity::getUser)
+                .toList();
+
+        return new GetUserListChatRoomResponse(userEntities);
     }
 
     private void sendJoinedMessage(
