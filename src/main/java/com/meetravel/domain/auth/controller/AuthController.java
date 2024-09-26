@@ -21,8 +21,8 @@ public class AuthController implements AuthControllerDoc {
 
     @Override
     @PostMapping("/kakao/login")
-    public ResponseEntity<LoginResponse> kakaoLogin(@RequestParam String authorizationCode, @RequestParam String redirectUrl, HttpServletResponse response) {
+    public ResponseEntity<LoginResponse> kakaoLogin(@RequestParam String authorizationCode, @RequestParam String redirectUri, HttpServletResponse response) {
         log.info("kakao login");
-        return ResponseEntity.ok(authService.kakaoLogin(authorizationCode, redirectUrl, response));
+        return ResponseEntity.ok(authService.kakaoLogin(authorizationCode, redirectUri, response));
     }
 }

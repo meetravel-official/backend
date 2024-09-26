@@ -33,10 +33,10 @@ public class AuthService {
      * @return
      */
     @Transactional
-    public LoginResponse kakaoLogin(String authorizationCode, String redirectUrl, HttpServletResponse response) {
+    public LoginResponse kakaoLogin(String authorizationCode, String redirectUri, HttpServletResponse response) {
 
         // 1. 인가 코드로 카카오 서버에 카카오 토큰 요청 API 호출
-        KakaoToken kakaoToken = this.getKakaoToken(authorizationCode, redirectUrl);
+        KakaoToken kakaoToken = this.getKakaoToken(authorizationCode, redirectUri);
 
         // 2. ID 토큰 정보 받아오기
         KakaoToken.IdToken idToken = this.getKakaoIdToken(kakaoToken.getIdToken());

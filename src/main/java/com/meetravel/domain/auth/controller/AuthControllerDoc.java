@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface AuthControllerDoc {
 
     @Operation(summary = "카카오 로그인", description = "카카오 로그인을 진행합니다.")
-    ResponseEntity<LoginResponse> kakaoLogin(@RequestParam String authorizationCode, @RequestParam String redirectUrl, HttpServletResponse response);
+    ResponseEntity<LoginResponse> kakaoLogin(@RequestParam String authorizationCode, @RequestParam String redirectUri, HttpServletResponse response);
 }
