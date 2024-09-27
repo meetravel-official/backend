@@ -22,7 +22,7 @@ public class MatchingFormController implements MatchingFormControllerDoc {
     private final MatchingFormService matchingFormService;
 
     @Override
-    @PostMapping("/{userId}")
+    @PostMapping("")
     public void createMatchingApplicationForm(@AuthenticationPrincipal UserDetails userDetails,
                                               @RequestBody @Valid CreateMatchingFormRequest request) {
         matchingFormService.createMatchingForm(userDetails.getUsername(), request);
