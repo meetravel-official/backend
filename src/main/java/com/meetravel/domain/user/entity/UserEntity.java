@@ -96,6 +96,10 @@ public class UserEntity extends BaseEntity {
         userRole.setUser(this);
     }
 
+    public void updateProfileImage(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+    }
+
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }

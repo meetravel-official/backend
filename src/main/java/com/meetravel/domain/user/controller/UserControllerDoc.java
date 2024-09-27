@@ -2,6 +2,7 @@ package com.meetravel.domain.user.controller;
 
 import com.meetravel.domain.user.dto.request.UpdateMyPageInfoRequest;
 import com.meetravel.domain.user.dto.request.UpdateNicknameRequest;
+import com.meetravel.domain.user.dto.request.UpdateProfileImageRequest;
 import com.meetravel.domain.user.dto.response.GetMyPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,6 +19,9 @@ public interface UserControllerDoc {
 
     @Operation(summary = "마이페이지 조회", description = "마이페이지를 조회합니다.")
     ResponseEntity<GetMyPageResponse> getMyPage(@AuthenticationPrincipal UserDetails userDetails);
+
+    @Operation(summary = "프로필 이미지 수정", description = "프로필 이미지를 수정합니다.")
+    void updateProfileImage(@AuthenticationPrincipal UserDetails userDetails, @RequestBody @Valid UpdateProfileImageRequest request);
 
     @Operation(summary = "닉네임 수정", description = "닉네임을 수정합니다.")
     void updateNickname(@AuthenticationPrincipal UserDetails userDetails, @RequestBody @Valid UpdateNicknameRequest request);

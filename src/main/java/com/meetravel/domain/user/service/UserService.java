@@ -28,7 +28,6 @@ public class UserService {
     @Value("${auth.kakao.admin_key}")
     private String adminKey;
 
-
     /**
      * 마이페이지 조회
      * @param userId
@@ -53,6 +52,12 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
+    public void updateProfileImage(String userId, String profileImageUrl) {
+        UserEntity user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+        user.updateProfileImage(profileImageUrl);
+    }
 
     /**
      * 마이페이지 닉네임 수정

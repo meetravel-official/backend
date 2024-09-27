@@ -3,6 +3,7 @@ package com.meetravel.domain.user.controller;
 
 import com.meetravel.domain.user.dto.request.UpdateMyPageInfoRequest;
 import com.meetravel.domain.user.dto.request.UpdateNicknameRequest;
+import com.meetravel.domain.user.dto.request.UpdateProfileImageRequest;
 import com.meetravel.domain.user.dto.response.GetMyPageResponse;
 import com.meetravel.domain.user.service.UserService;
 import com.meetravel.global.jwt.JwtService;
@@ -25,21 +26,28 @@ public class UserController implements UserControllerDoc {
     private final JwtService jwtService;
 
     @Override
-    @GetMapping("/{userId}/my-page")
+    @GetMapping("/my-page")
     public ResponseEntity<GetMyPageResponse> getMyPage(@AuthenticationPrincipal UserDetails userDetails) {
         log.info("Get MyPage");
         return ResponseEntity.ok(userService.getMyPage(userDetails.getUsername()));
     }
 
+    @Override
+    @PutMapping("/profileImage")
+    public void updateProfileImage(@AuthenticationPrincipal UserDetails userDetails, @RequestBody @Valid UpdateProfileImageRequest request) {
+        log.info("Update Profile Image");
+        userService.updateProfileImage(userDetails.getUsername(), request.getProfileImageUrl());
+    }
+
 
     @Override
-    @PutMapping("/{userId}/nickname")
+    @PutMapping("/nickname")
     public void updateNickname(@AuthenticationPrincipal UserDetails userDetails, @RequestBody @Valid UpdateNicknameRequest request) {
         log.info("Update Nickname");
         userService.updateNickname(userDetails.getUsername(), request.getNickname());
     }
     @Override
-    @PutMapping("/{userId}/info")
+    @PutMapping("/info")
     public void updateMyPageInfo(@AuthenticationPrincipal UserDetails userDetails, @RequestBody @Valid UpdateMyPageInfoRequest request){
         log.info("Update MyPageInfo");
         userService.updateMyPageInfo(userDetails.getUsername(), request);
