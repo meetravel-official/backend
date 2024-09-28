@@ -58,6 +58,10 @@ public class MatchingFormEntity extends BaseEntity {
     @Convert(converter = GenderRatioConverter.class)
     private GenderRatio genderRatio;
 
+    @Column(name = "COST")
+    @Convert(converter = CostConverter.class)
+    private Cost cost;
+
     @Column(name = "AREA_CODE")
     private String areaCode;
 

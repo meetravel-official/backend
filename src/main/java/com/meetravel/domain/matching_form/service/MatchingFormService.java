@@ -67,6 +67,7 @@ public class MatchingFormService {
                 .endDate(request.getEndDate())
                 .groupSize(request.getGroupSize())
                 .genderRatio(request.getGenderRatio())
+                .cost(request.getCost())
                 .areaCode(request.getArea().getCode())
                 .areaName(request.getArea().getName())
                 .detailAreaCode(request.getDetailArea().getDetailCode())
