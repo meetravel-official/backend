@@ -1,10 +1,12 @@
 package com.meetravel.domain.chatroom.service;
 
 import com.meetravel.domain.chatroom.dto.*;
+import com.meetravel.domain.chatroom.entity.ChatMessageEntity;
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.domain.chatroom.entity.UserChatRoomEntity;
 import com.meetravel.domain.chatroom.enums.ChatMessageType;
 import com.meetravel.domain.chatroom.event.model.ChatMessageEvent;
+import com.meetravel.domain.chatroom.repository.ChatMessageRepository;
 import com.meetravel.domain.chatroom.repository.ChatRoomRepository;
 import com.meetravel.domain.chatroom.repository.UserChatRoomRepository;
 import com.meetravel.domain.chatroom.vo.ChatRoomPreviewInfo;
@@ -17,6 +19,8 @@ import com.meetravel.global.exception.ErrorCode;
 import com.meetravel.global.exception.NotFoundException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,6 +37,7 @@ public class ChatRoomService {
     private final UserChatRoomRepository userChatRoomRepository;
     private final MatchingFormRepository matchingFormRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
 
     @Transactional
     public CreateChatRoomResponse createChatRoom(
@@ -226,6 +231,49 @@ public class ChatRoomService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_EXIST_MATCHING_FORM_CHAT_ROOM));
 
         return new GetChatRoomResponse(userEntities, matchingFormEntity);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ChatMessage> getChatMessages(
+            String userId,
+            Long chatRoomId,
+            GetChatMessageRequest request
+    ) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
+        UserChatRoomEntity joinedUserChatRoomEntity = userEntity.getUserChatRooms()
+                .stream()
+                .filter(it -> chatRoomEntity.getId().equals(it.getChatRoom().getId()) && it.getLeaveAt() == null)
+                .findFirst()
+                .orElse(null);
+
+        if (joinedUserChatRoomEntity == null) {
+            throw new BadRequestException(ErrorCode.USER_ROOM_NOT_JOINED);
+        }
+
+        Page<ChatMessageEntity> chatMessageEntityPage;
+        if (request.getLastChatMessageId() == null) {
+            chatMessageEntityPage = chatMessageRepository.findAllByChatRoom(request.generatePageable(), chatRoomEntity);
+        } else {
+            ChatMessageEntity chatMessageEntity = chatMessageRepository.findById(request.getLastChatMessageId())
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_CHAT_MESSAGE));
+
+            chatMessageEntityPage = chatMessageRepository.findAllByIdBeforeAndChatRoom(request.generatePageable(), chatMessageEntity.getId(), chatRoomEntity);
+        }
+
+        return new PageImpl<>(
+                chatMessageEntityPage.getContent()
+                        .stream()
+                        .map(ChatMessage::new)
+                        .toList()
+                ,
+                chatMessageEntityPage.getPageable(),
+                chatMessageEntityPage.getTotalElements()
+        );
     }
 
     private void sendJoinedMessage(

@@ -4,9 +4,11 @@ import com.meetravel.domain.chatroom.enums.ChatMessageType;
 import com.meetravel.domain.user.entity.UserEntity;
 import com.meetravel.global.utils.UUIDGenerator;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @Table(name = "chat_message")
 public class ChatMessageEntity {

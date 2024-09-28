@@ -1,12 +1,11 @@
 package com.meetravel.domain.chatroom.controller;
 
-import com.meetravel.domain.chatroom.dto.CreateChatRoomRequest;
-import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
-import com.meetravel.domain.chatroom.dto.GetMyChatRoomResponse;
-import com.meetravel.domain.chatroom.dto.GetChatRoomResponse;
+import com.meetravel.domain.chatroom.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -102,5 +101,24 @@ public interface ChatRoomControllerDoc {
             @AuthenticationPrincipal UserDetails userDetails,
             @Schema(description = "채팅방 고유 번호")
             @PathVariable Long chatRoomId
+    );
+
+    @Operation(
+            summary = "채팅방 메세지 조회",
+            description = """
+                    [operation]
+                    - 입장한 채팅방의 메세지를 보여줍니다.
+                    
+                    [validation]
+                    - 존재하지 않는 채팅방의 메세지는 볼 수 없습니다.
+                    - 입장하지 않은 채팅방의 메세지는 볼 수 없습니다.
+                    """
+    )
+    ResponseEntity<Page<ChatMessage>> getChatMessages(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Schema(description = "채팅방 고유 번호")
+            @PathVariable Long chatRoomId,
+            @ParameterObject
+            GetChatMessageRequest request
     );
 }

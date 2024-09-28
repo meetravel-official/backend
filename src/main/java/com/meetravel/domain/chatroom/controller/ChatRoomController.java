@@ -1,11 +1,10 @@
 package com.meetravel.domain.chatroom.controller;
 
-import com.meetravel.domain.chatroom.dto.CreateChatRoomRequest;
-import com.meetravel.domain.chatroom.dto.CreateChatRoomResponse;
-import com.meetravel.domain.chatroom.dto.GetMyChatRoomResponse;
-import com.meetravel.domain.chatroom.dto.GetChatRoomResponse;
+import com.meetravel.domain.chatroom.dto.*;
 import com.meetravel.domain.chatroom.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -76,6 +75,23 @@ public class ChatRoomController implements ChatRoomControllerDoc {
         GetChatRoomResponse response = chatRoomService.getChatRoom(
                 userDetails.getUsername(),
                 chatRoomId
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/{chatRoomId}/messages")
+    public ResponseEntity<Page<ChatMessage>> getChatMessages(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long chatRoomId,
+            @ParameterObject
+            GetChatMessageRequest request
+    ) {
+        Page<ChatMessage> response = chatRoomService.getChatMessages(
+                userDetails.getUsername(),
+                chatRoomId,
+                request
         );
 
         return ResponseEntity.ok(response);
