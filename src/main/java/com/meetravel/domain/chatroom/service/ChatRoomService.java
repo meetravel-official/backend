@@ -170,7 +170,7 @@ public class ChatRoomService {
     }
 
     @Transactional(readOnly = true)
-    public GetUserListChatRoomResponse getUsersWithChatRoom(
+    public GetChatRoomResponse getChatRoom(
             String userId,
             Long chatRoomId
     ) {
@@ -196,7 +196,12 @@ public class ChatRoomService {
                 .map(UserChatRoomEntity::getUser)
                 .toList();
 
-        return new GetUserListChatRoomResponse(userEntities);
+        MatchingFormEntity matchingFormEntity = chatRoomEntity.getMatchingForms()
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_EXIST_MATCHING_FORM_CHAT_ROOM));
+
+        return new GetChatRoomResponse(userEntities, matchingFormEntity);
     }
 
     private void sendJoinedMessage(

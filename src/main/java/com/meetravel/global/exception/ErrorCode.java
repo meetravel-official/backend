@@ -28,6 +28,7 @@ public enum ErrorCode {
     TRAVEL_DEST_NOT_FOUND(HttpStatus.NOT_FOUND, "목록에 존재하지 않는 여행지입니다."),
     TRAVEL_PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 여행 정보입니다."),
     MATCHING_FORM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 매칭 신청서입니다."),
+    NOT_EXIST_MATCHING_FORM_CHAT_ROOM(HttpStatus.NOT_FOUND, "채팅방에 매칭 신청서가 존재하지 않습니다."),
     CHAT_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 채팅방입니다."),
     ROLE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 권한은 목록에 없습니다."),
     DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 데이터를 찾을 수 없습니다."),
