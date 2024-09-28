@@ -4,15 +4,21 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class SwaggerConfig {
+    private final Environment environment;
 
     private static final String BASE_PACKAGE = "com.meetravel.domain";
 
@@ -42,7 +48,13 @@ public class SwaggerConfig {
                 .in(SecurityScheme.In.HEADER).name("Authorization");
         SecurityRequirement securityRequirement = new SecurityRequirement().addList("bearerAuth");
 
+        Server prodServer = new Server()
+                .url("https://api.meetravel.life");
+        Server localServer = new Server()
+                .url("http://localhost:" + environment.getProperty("server.port"));
+
         return new OpenAPI()
+                .servers(List.of(prodServer, localServer))
                 .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
                 .security(Collections.singletonList(securityRequirement));
     }
