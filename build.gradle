@@ -76,6 +76,7 @@ dependencies {
     implementation("org.flywaydb:flyway-mysql:10.18.0")
 
     implementation("com.github.f4b6a3:uuid-creator:6.0.0")
+    implementation("com.amazonaws.secretsmanager:aws-secretsmanager-jdbc:2.0.2")
 
     if (Os.isFamily(Os.FAMILY_MAC) && Os.isArch("x86_64")) {
         runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.113.Final:osx-x86_64")
