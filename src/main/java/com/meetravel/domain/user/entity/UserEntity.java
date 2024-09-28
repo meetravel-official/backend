@@ -108,6 +108,7 @@ public class UserEntity extends BaseEntity {
         this.travelFrequency = request.getTravelFrequency();
         this.planningType = request.getPlanningType();
         this.scheduleType = request.getScheduleType();
+        this.mbti = request.getMbti();
         this.hobby = request.getHobby();
         this.intro = request.getIntro();
     }
