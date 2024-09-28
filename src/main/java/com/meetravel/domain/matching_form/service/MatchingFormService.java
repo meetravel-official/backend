@@ -65,6 +65,7 @@ public class MatchingFormService {
                 .duration(request.getDuration())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
+                .groupSize(request.getGroupSize())
                 .genderRatio(request.getGenderRatio())
                 .areaCode(request.getArea().getCode())
                 .areaName(request.getArea().getName())
@@ -108,11 +109,9 @@ public class MatchingFormService {
         /** 매칭 신청서 항목 수정(키워드 제외) */
         matchingForm.updateMatchingForm(request);
 
-
         /** 삭제할 키워드 */
         List<Long> travelKeywordToDelete = request.getTravelKeywordToDelete();
-        System.out.println(travelKeywordToDelete);
-        System.out.println(request.getTravelKeywordToAdd());
+
         // 현재 있는 키워드 중에서 삭제할 키워드 목록 생성
         List<Long> keywordsToDelete = matchingForm.getTravelKeywordList().stream()
                 .filter(travelKeyword -> travelKeywordToDelete.contains(travelKeyword.getId()))

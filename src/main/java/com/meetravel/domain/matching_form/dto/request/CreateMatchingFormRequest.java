@@ -14,6 +14,7 @@ public class CreateMatchingFormRequest {
     private Duration duration;
     private LocalDate startDate;
     private LocalDate endDate;
+    private GroupSize groupSize;
     private GenderRatio genderRatio;
     private Area area;
     private DetailArea detailArea;

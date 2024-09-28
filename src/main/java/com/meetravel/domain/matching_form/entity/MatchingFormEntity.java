@@ -50,6 +50,10 @@ public class MatchingFormEntity extends BaseEntity {
     @Column(name = "END_DT")
     private LocalDate endDate;
 
+    @Column(name = "GROUP_SIZE")
+    @Convert(converter = GroupSizeConverter.class)
+    private GroupSize groupSize;
+
     @Column(name = "GENDER_RATIO")
     @Convert(converter = GenderRatioConverter.class)
     private GenderRatio genderRatio;

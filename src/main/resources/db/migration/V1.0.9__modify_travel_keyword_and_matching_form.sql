@@ -4,5 +4,4 @@ ADD CONSTRAINT unique_travel_keyword_matching_form UNIQUE (TRAVEL_KEYWORD, MATCH
 
 -- 컬럼 제거
 ALTER TABLE travel_keyword
-DROP COLUMN GROUP_SIZE,
 DROP COLUMN COST;
