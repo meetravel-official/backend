@@ -77,7 +77,7 @@ public class SecurityConfig {
         return request -> {
             CorsConfiguration config = new CorsConfiguration();
             config.setAllowedHeaders(Collections.singletonList("*"));
-            config.setExposedHeaders(Collections.singletonList("*"));
+            config.setExposedHeaders(List.of("Authorization", "Authorization-refresh"));
             config.setAllowedMethods(Collections.singletonList("*"));
             // 아래 포트 9001인데 application.yaml에서 바뀌면 수정해야함!
             config.setAllowedOriginPatterns(List.of(
