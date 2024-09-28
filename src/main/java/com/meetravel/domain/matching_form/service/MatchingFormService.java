@@ -2,6 +2,7 @@ package com.meetravel.domain.matching_form.service;
 
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.domain.matching_form.dto.request.CreateMatchingFormRequest;
+import com.meetravel.domain.matching_form.dto.request.UpdateMatchingFormRequest;
 import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetMatchApplicationFormResponse;
@@ -64,9 +65,7 @@ public class MatchingFormService {
                 .duration(request.getDuration())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
-                .groupSize(request.getGroupSize())
                 .genderRatio(request.getGenderRatio())
-                .cost(request.getCost())
                 .areaCode(request.getArea().getCode())
                 .areaName(request.getArea().getName())
                 .detailAreaCode(request.getDetailArea().getDetailCode())
@@ -89,15 +88,45 @@ public class MatchingFormService {
      * @param keyword
      */
     private void addTravelKeyword(MatchingFormEntity matchingForm, TravelKeyword keyword) {
-        TravelKeywordEntity travelKeyword = TravelKeywordEntity.builder()
-                .matchingForm(matchingForm)
-                .keyword(keyword)
-                .build();
+        if (!travelKeywordRepository.existsByMatchingFormAndKeyword(matchingForm, keyword)) {
+            TravelKeywordEntity travelKeyword = TravelKeywordEntity.builder()
+                    .matchingForm(matchingForm)
+                    .keyword(keyword)
+                    .build();
 
-        matchingForm.addTravelKeyword(travelKeyword);
-        travelKeywordRepository.save(travelKeyword);
+            matchingForm.addTravelKeyword(travelKeyword);
+            travelKeywordRepository.save(travelKeyword);
+        }
     }
 
+
+    @Transactional
+    public void updateMatchingForm(UpdateMatchingFormRequest request) {
+        MatchingFormEntity matchingForm = matchingFormRepository
+                .findById(request.getMatchingFormId()).orElseThrow(() -> new NotFoundException(ErrorCode.MATCHING_FORM_NOT_FOUND));
+
+        /** 매칭 신청서 항목 수정(키워드 제외) */
+        matchingForm.updateMatchingForm(request);
+
+
+        /** 삭제할 키워드 */
+        List<Long> travelKeywordToDelete = request.getTravelKeywordToDelete();
+        System.out.println(travelKeywordToDelete);
+        System.out.println(request.getTravelKeywordToAdd());
+        // 현재 있는 키워드 중에서 삭제할 키워드 목록 생성
+        List<Long> keywordsToDelete = matchingForm.getTravelKeywordList().stream()
+                .filter(travelKeyword -> travelKeywordToDelete.contains(travelKeyword.getId()))
+                .map(TravelKeywordEntity::getId)
+                .toList();
+
+        travelKeywordRepository.deleteAllByTravelKeywordId(keywordsToDelete);
+
+        /** 추가할 키워드 */
+        for (TravelKeyword keyword : request.getTravelKeywordToAdd()) {
+            this.addTravelKeyword(matchingForm, keyword);
+        }
+
+    }
 
     public GetAreaResponse getArea() {
         int numOfRows = 17; // 충분한 수 넣어줌
