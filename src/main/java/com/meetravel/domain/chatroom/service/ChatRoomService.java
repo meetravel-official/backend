@@ -5,7 +5,6 @@ import com.meetravel.domain.chatroom.entity.ChatMessageEntity;
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.domain.chatroom.entity.UserChatRoomEntity;
 import com.meetravel.domain.chatroom.enums.ChatMessageType;
-import com.meetravel.domain.chatroom.event.model.ChatMessageEvent;
 import com.meetravel.domain.chatroom.repository.ChatMessageRepository;
 import com.meetravel.domain.chatroom.repository.ChatRoomRepository;
 import com.meetravel.domain.chatroom.repository.UserChatRoomRepository;
@@ -17,7 +16,6 @@ import com.meetravel.domain.user.repository.UserRepository;
 import com.meetravel.global.exception.BadRequestException;
 import com.meetravel.global.exception.ErrorCode;
 import com.meetravel.global.exception.NotFoundException;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -31,7 +29,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Service
 public class ChatRoomService {
-    private final RabbitTemplate rabbitTemplate;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final UserRepository userRepository;
     private final UserChatRoomRepository userChatRoomRepository;
@@ -157,14 +154,12 @@ public class ChatRoomService {
     ) {
         this.validateUserJoinedChatRoom(userId, chatSendRequest.chatRoomId());
 
-        ChatMessage chatMessage = new ChatMessage(
+        this.sendMessageAndEventPublisher(
                 userId,
                 chatSendRequest.chatRoomId(),
                 ChatMessageType.CHAT,
                 chatSendRequest.message()
         );
-
-        this.sendMessageAndEventPublisher(chatMessage);
     }
 
     @Transactional(readOnly = true)
@@ -281,14 +276,12 @@ public class ChatRoomService {
             Long chatRoomId
     ) {
         String joinedMessage = this.getJoinedMessage(userId);
-        ChatMessage chatMessage = new ChatMessage(
+        this.sendMessageAndEventPublisher(
                 userId,
                 chatRoomId,
                 ChatMessageType.JOIN,
                 joinedMessage
         );
-
-        this.sendMessageAndEventPublisher(chatMessage);
     }
 
     private void sendLeaveMessage(
@@ -299,15 +292,12 @@ public class ChatRoomService {
                 userId,
                 chatRoomId
         );
-
-        ChatMessage chatMessage = new ChatMessage(
+        this.sendMessageAndEventPublisher(
                 userId,
                 chatRoomId,
                 ChatMessageType.LEAVE,
                 leftMessage
         );
-
-        this.sendMessageAndEventPublisher(chatMessage);
     }
 
     private String getJoinedMessage(String userId) {
@@ -381,9 +371,27 @@ public class ChatRoomService {
         }
     }
 
-    private void sendMessageAndEventPublisher(ChatMessage chatMessage) {
-        rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.getChatRoomId(), chatMessage);
-        applicationEventPublisher.publishEvent(new ChatMessageEvent(chatMessage));
+    private void sendMessageAndEventPublisher(
+            String userId,
+            Long chatRoomId,
+            ChatMessageType chatMessageType,
+            String message
+    ) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
+        ChatMessageEntity chatMessageEntity = new ChatMessageEntity(
+                userEntity,
+                chatRoomEntity,
+                message,
+                chatMessageType
+        );
+
+        ChatMessageEntity savedChatMessageEntity = chatMessageRepository.save(chatMessageEntity);
+        applicationEventPublisher.publishEvent(new ChatMessage(savedChatMessageEntity));
     }
 
 }
