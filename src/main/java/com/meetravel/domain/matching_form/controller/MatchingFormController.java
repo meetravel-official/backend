@@ -1,6 +1,7 @@
 package com.meetravel.domain.matching_form.controller;
 
 import com.meetravel.domain.matching_form.dto.request.CreateMatchingFormRequest;
+import com.meetravel.domain.matching_form.dto.request.UpdateMatchingFormRequest;
 import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetMatchApplicationFormResponse;
@@ -23,9 +24,15 @@ public class MatchingFormController implements MatchingFormControllerDoc {
 
     @Override
     @PostMapping("")
-    public void createMatchingApplicationForm(@AuthenticationPrincipal UserDetails userDetails,
+    public void createMatchingForm(@AuthenticationPrincipal UserDetails userDetails,
                                               @RequestBody @Valid CreateMatchingFormRequest request) {
         matchingFormService.createMatchingForm(userDetails.getUsername(), request);
+    }
+
+    @Override
+    @PutMapping("")
+    public void updateMatchingForm(@RequestBody @Valid UpdateMatchingFormRequest request) {
+        matchingFormService.updateMatchingForm(request);
     }
 
     @Override

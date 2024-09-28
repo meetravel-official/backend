@@ -1,6 +1,7 @@
 package com.meetravel.domain.matching_form.controller;
 
 import com.meetravel.domain.matching_form.dto.request.CreateMatchingFormRequest;
+import com.meetravel.domain.matching_form.dto.request.UpdateMatchingFormRequest;
 import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetMatchApplicationFormResponse;
@@ -18,9 +19,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface MatchingFormControllerDoc {
 
     @Operation(summary = "매칭 신청서 작성", description = "매칭 신청서를 작성합니다.")
-    void createMatchingApplicationForm(@AuthenticationPrincipal UserDetails userDetails,
+    void createMatchingForm(@AuthenticationPrincipal UserDetails userDetails,
                                        @RequestBody @Valid CreateMatchingFormRequest request);
 
+    @Operation(summary = "매칭 신청서 수정", description = "매칭 신청서를 수정합니다.")
+    void updateMatchingForm(@RequestBody @Valid UpdateMatchingFormRequest request);
     @Operation(summary = "매칭 신청서에서 선택할 지역(대분류) 목록 조회", description = "매칭 신청서에서 선택할 지역(대분류) 목록을 조회합니다.")
     GetAreaResponse getAreaResponse();
 
