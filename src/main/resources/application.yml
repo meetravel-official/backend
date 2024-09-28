@@ -18,7 +18,7 @@ jwt:
   token:
     header: Authorization
     access:
-      expiration: 7200000 # 30? (1000L(ms -> s) * 60L(s -> m) * 30L(m -> h))
+      expiration: 86400000 # 30? (1000L(ms -> s) * 60L(s -> m) * 30L(m -> h))
     refresh:
       expiration: 1209600000 #  (1000L(ms -> s) * 60L(s -> m) * 60L(m -> h) * 24L(h -> ??) * 14(2?))
 
