@@ -28,12 +28,12 @@ public enum TravelKeyword implements BaseEnum {
     }
 
     @JsonCreator
-    public static GroupSize fromValueToEnum(String value) {
-        for (GroupSize size : GroupSize.values()) {
-            if (size.getValue().equals(value)) {
-                return size;
+    public static TravelKeyword fromValueToEnum(String value) {
+        for (TravelKeyword keyword : TravelKeyword.values()) {
+            if (keyword.getValue().equals(value)) {
+                return keyword;
             }
         }
-        return null;
+        throw new IllegalArgumentException("잘못된 여행키워드입니다.");
     }
 }
