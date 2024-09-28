@@ -78,6 +78,16 @@ public class ChatRoomService {
             throw new BadRequestException(ErrorCode.USER_ROOM_ALREADY_JOINED);
         }
 
+        UserChatRoomEntity joinedUserOtherChatRoomEntity = userEntity.getUserChatRooms()
+                .stream()
+                .filter(it -> it.getLeaveAt() == null)
+                .findFirst()
+                .orElse(null);
+
+        if (joinedUserOtherChatRoomEntity != null) {
+            throw new BadRequestException(ErrorCode.ALREADY_EXISTS_JOINED_CHAT_ROOM);
+        }
+
         userChatRoomRepository.save(
                 new UserChatRoomEntity(
                         userEntity,

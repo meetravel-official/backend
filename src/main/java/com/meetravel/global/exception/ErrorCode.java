@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     ALREADY_EXISTS_USER_ID(HttpStatus.BAD_REQUEST, "이미 존재하는 회원아이디입니다."),
+    ALREADY_EXISTS_JOINED_CHAT_ROOM(HttpStatus.BAD_REQUEST, "이미 입장한 채팅방이 존재합니다."),
     ALREADY_EXISTS_ROOM_WITH_MATCHING_FORM(HttpStatus.BAD_REQUEST, "이미 해당 매칭 신청서로 입장한 채팅방이 존재합니다."),
     DATA_VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "데이터가 유효하지 않습니다."),
     HTTP_MESSAGE_NOT_READABLE_EXCEPTION(HttpStatus.BAD_REQUEST, "HTTP 요청 본문 변환 중 에러가 발생했습니다."),
