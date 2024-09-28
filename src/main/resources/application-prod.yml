@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.amazonaws.secretsmanager.sql.AWSSecretsManagerMySQLDriver
-    url: jdbc-secretsmanager:mysql://meetravel-prod.ccfns6hbmlbr.ap-northeast-2.rds.amazonaws.com:3306
+    url: jdbc-secretsmanager:mysql://meetravel-prod.ccfns6hbmlbr.ap-northeast-2.rds.amazonaws.com:3306/${MEETRAVEL_DB_SCHEMA}
     username: rds!db-2a35318f-5e5c-4a56-b959-2d2713126fd6
   flyway:
     enabled: true
