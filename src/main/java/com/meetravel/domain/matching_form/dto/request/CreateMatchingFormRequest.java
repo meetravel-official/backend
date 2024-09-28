@@ -14,22 +14,18 @@ public class CreateMatchingFormRequest {
     private Duration duration;
     private LocalDate startDate;
     private LocalDate endDate;
-    private GroupSize groupSize;
     private GenderRatio genderRatio;
-    private Cost cost;
     private Area area;
     private DetailArea detailArea;
     private List<TravelKeyword> travelKeywordList;
 
     @Getter
-    @Builder
     public static class Area {
         private String code;
         private String name;
     }
 
     @Getter
-    @Builder
     public static class DetailArea {
         private String detailCode;
         private String detailName;
