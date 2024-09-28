@@ -50,11 +50,13 @@ public class SwaggerConfig {
 
         Server prodServer = new Server()
                 .url("https://api.meetravel.life");
+        Server devServer = new Server()
+                .url("http://175.211.58.83:10200");
         Server localServer = new Server()
                 .url("http://localhost:" + environment.getProperty("server.port"));
 
         return new OpenAPI()
-                .servers(List.of(prodServer, localServer))
+                .servers(List.of(prodServer, devServer, localServer))
                 .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
                 .security(Collections.singletonList(securityRequirement));
     }
