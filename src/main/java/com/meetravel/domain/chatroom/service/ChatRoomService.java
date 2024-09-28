@@ -218,11 +218,7 @@ public class ChatRoomService {
             String userId,
             Long chatRoomId
     ) {
-        String joinedMessage = this.getJoinedMessage(
-                userId,
-                chatRoomId
-        );
-
+        String joinedMessage = this.getJoinedMessage(userId);
         ChatMessage chatMessage = new ChatMessage(
                 userId,
                 chatRoomId,
@@ -252,12 +248,7 @@ public class ChatRoomService {
         this.sendMessageAndEventPublisher(chatMessage);
     }
 
-    private String getJoinedMessage(
-            String userId,
-            Long chatRoomId
-    ) {
-        this.validateUserJoinedChatRoom(userId, chatRoomId);
-
+    private String getJoinedMessage(String userId) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
