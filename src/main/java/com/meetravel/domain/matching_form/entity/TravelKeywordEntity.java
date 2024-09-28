@@ -10,7 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "travel_keyword")
+@Table(name = "travel_keyword", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"TRAVEL_KEYWORD","MATCHING_FORM_ID"})
+})
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
