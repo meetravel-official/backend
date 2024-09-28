@@ -42,6 +42,7 @@ public class UserService {
         return GetMyPageResponse.builder()
                 .profileImageUrl(user.getProfileImageUrl())
                 .nickname(user.getNickname())
+                .gender(user.getGender())
                 .birthDate(user.getBirthDate())
                 .travelFrequency(user.getTravelFrequency())
                 .planningType(user.getPlanningType())
