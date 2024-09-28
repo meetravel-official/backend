@@ -88,6 +88,20 @@ public class ChatRoomService {
             throw new BadRequestException(ErrorCode.ALREADY_EXISTS_JOINED_CHAT_ROOM);
         }
 
+        MatchingFormEntity matchingFormEntity = chatRoomEntity.getMatchingForms()
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_EXIST_MATCHING_FORM_CHAT_ROOM));
+
+        long joinedUserCount = chatRoomEntity.getUserChatRooms()
+                .stream()
+                .filter(it -> it.getLeaveAt() == null)
+                .count();
+
+        if (joinedUserCount >= matchingFormEntity.getGroupSize().getNumber()) {
+            throw new BadRequestException(ErrorCode.FULLED_GROUP_SIZE_CHAT_ROOM);
+        }
+
         userChatRoomRepository.save(
                 new UserChatRoomEntity(
                         userEntity,

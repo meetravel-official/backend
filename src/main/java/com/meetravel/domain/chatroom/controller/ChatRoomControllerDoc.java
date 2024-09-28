@@ -45,6 +45,7 @@ public interface ChatRoomControllerDoc {
                     - 존재하지 않는 채팅방에 참여할 수 없습니다.
                     - 이미 참여중인 채팅방에 다시 참여할 수 없습니다.
                     - 이미 참여중인 채팅방이 존재하면 새로운 채팅방에 참여할 수 없습니다.
+                    - 정원 모집이 완료된 채팅방에는 참여할 수 없습니다.
                     """
     )
     ResponseEntity<Object> joinChatRoom(
