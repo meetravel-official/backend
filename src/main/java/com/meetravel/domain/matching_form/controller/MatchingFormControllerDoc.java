@@ -5,6 +5,7 @@ import com.meetravel.domain.matching_form.dto.request.UpdateMatchingFormRequest;
 import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetMatchApplicationFormResponse;
+import com.meetravel.domain.matching_form.dto.response.GetMatchingFormResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "매칭 신청서 API")
 public interface MatchingFormControllerDoc {
 
+    @Operation(summary = "매칭 신청서 조회", description = "매칭 신청서를 조회합니다.")
+    ResponseEntity<GetMatchingFormResponse> getMatchingForm(@AuthenticationPrincipal UserDetails userDetails);
     @Operation(summary = "매칭 신청서 작성", description = "매칭 신청서를 작성합니다.")
     void createMatchingForm(@AuthenticationPrincipal UserDetails userDetails,
                                        @RequestBody @Valid CreateMatchingFormRequest request);

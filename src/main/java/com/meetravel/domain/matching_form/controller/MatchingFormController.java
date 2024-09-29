@@ -5,6 +5,7 @@ import com.meetravel.domain.matching_form.dto.request.UpdateMatchingFormRequest;
 import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetMatchApplicationFormResponse;
+import com.meetravel.domain.matching_form.dto.response.GetMatchingFormResponse;
 import com.meetravel.domain.matching_form.service.MatchingFormService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,12 @@ import org.springframework.web.bind.annotation.*;
 public class MatchingFormController implements MatchingFormControllerDoc {
 
     private final MatchingFormService matchingFormService;
+
+    @Override
+    @GetMapping("")
+    public ResponseEntity<GetMatchingFormResponse> getMatchingForm(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(matchingFormService.getMatchingForm(userDetails.getUsername()));
+    }
 
     @Override
     @PostMapping("")
