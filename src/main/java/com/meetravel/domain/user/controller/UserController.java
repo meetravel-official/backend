@@ -5,6 +5,7 @@ import com.meetravel.domain.user.dto.request.UpdateMyPageInfoRequest;
 import com.meetravel.domain.user.dto.request.UpdateNicknameRequest;
 import com.meetravel.domain.user.dto.request.UpdateProfileImageRequest;
 import com.meetravel.domain.user.dto.response.GetMyPageResponse;
+import com.meetravel.domain.user.dto.response.GetOtherUserProfileResponse;
 import com.meetravel.domain.user.service.UserService;
 import com.meetravel.global.jwt.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,6 +31,13 @@ public class UserController implements UserControllerDoc {
     public ResponseEntity<GetMyPageResponse> getMyPage(@AuthenticationPrincipal UserDetails userDetails) {
         log.info("Get MyPage");
         return ResponseEntity.ok(userService.getMyPage(userDetails.getUsername()));
+    }
+
+    @Override
+    @GetMapping("/otherUser/profile")
+    public ResponseEntity<GetOtherUserProfileResponse> getOtherUserProfile(@RequestParam String otherUserId) {
+        log.info("Get Other User Profile");
+        return ResponseEntity.ok(userService.getOtherUserProfile(otherUserId));
     }
 
     @Override

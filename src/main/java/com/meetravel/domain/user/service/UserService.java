@@ -4,6 +4,7 @@ import com.meetravel.domain.auth.service.KakaoApiFeignClient;
 import com.meetravel.domain.token.service.RefreshTokenService;
 import com.meetravel.domain.user.dto.request.UpdateMyPageInfoRequest;
 import com.meetravel.domain.user.dto.response.GetMyPageResponse;
+import com.meetravel.domain.user.dto.response.GetOtherUserProfileResponse;
 import com.meetravel.domain.user.entity.UserEntity;
 import com.meetravel.domain.user.repository.UserRepository;
 import com.meetravel.global.exception.ErrorCode;
@@ -84,6 +85,25 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         user.updateMyPageInfo(request);
+    }
+
+    @Transactional
+    public GetOtherUserProfileResponse getOtherUserProfile(String otherUserId) {
+        UserEntity user = userRepository.findByUserId(otherUserId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        return GetOtherUserProfileResponse.builder()
+                .profileImageUrl(user.getProfileImageUrl())
+                .nickname(user.getNickname())
+                .gender(user.getGender())
+                .birthDate(user.getBirthDate())
+                .travelFrequency(user.getTravelFrequency())
+                .planningType(user.getPlanningType())
+                .scheduleType(user.getScheduleType())
+                .hobby(user.getHobby())
+                .mbti(user.getMbti())
+                .intro(user.getIntro())
+                .build();
     }
 
     /**

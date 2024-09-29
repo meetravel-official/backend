@@ -4,6 +4,7 @@ import com.meetravel.domain.user.dto.request.UpdateMyPageInfoRequest;
 import com.meetravel.domain.user.dto.request.UpdateNicknameRequest;
 import com.meetravel.domain.user.dto.request.UpdateProfileImageRequest;
 import com.meetravel.domain.user.dto.response.GetMyPageResponse;
+import com.meetravel.domain.user.dto.response.GetOtherUserProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +20,9 @@ public interface UserControllerDoc {
 
     @Operation(summary = "마이페이지 조회", description = "마이페이지를 조회합니다.")
     ResponseEntity<GetMyPageResponse> getMyPage(@AuthenticationPrincipal UserDetails userDetails);
+
+    @Operation(summary = "다른 사람의 프로필 조회", description = "다른 사람의 프로필을 조회합니다.")
+    ResponseEntity<GetOtherUserProfileResponse> getOtherUserProfile(@RequestParam String otherUserId);
 
     @Operation(summary = "프로필 이미지 수정", description = "프로필 이미지를 수정합니다.")
     void updateProfileImage(@AuthenticationPrincipal UserDetails userDetails, @RequestBody @Valid UpdateProfileImageRequest request);
