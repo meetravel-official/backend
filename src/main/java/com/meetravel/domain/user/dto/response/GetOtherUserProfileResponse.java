@@ -1,0 +1,28 @@
+package com.meetravel.domain.user.dto.response;
+
+import com.meetravel.domain.matching_form.enums.Gender;
+import com.meetravel.domain.user.enums.MBTI;
+import com.meetravel.domain.user.enums.PlanningType;
+import com.meetravel.domain.user.enums.ScheduleType;
+import com.meetravel.domain.user.enums.TravelFrequency;
+import lombok.Builder;
+import lombok.Getter;
+
+import java.time.LocalDate;
+
+@Getter
+@Builder
+public class GetOtherUserProfileResponse {
+
+    private String profileImageUrl;
+    private String nickname;
+    private Gender gender;
+    private LocalDate birthDate;
+    private TravelFrequency travelFrequency;
+    private PlanningType planningType;
+    private ScheduleType scheduleType;
+    private String hobby;
+    private MBTI mbti;
+    private String intro;
+
+}
