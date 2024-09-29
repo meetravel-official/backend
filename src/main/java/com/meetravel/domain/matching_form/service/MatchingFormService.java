@@ -6,9 +6,10 @@ import com.meetravel.domain.matching_form.dto.request.UpdateMatchingFormRequest;
 import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
 import com.meetravel.domain.matching_form.dto.response.GetMatchApplicationFormResponse;
+import com.meetravel.domain.matching_form.dto.response.GetMatchingFormResponse;
 import com.meetravel.domain.matching_form.entity.MatchingFormEntity;
 import com.meetravel.domain.matching_form.entity.TravelKeywordEntity;
-import com.meetravel.domain.matching_form.enums.TravelKeyword;
+import com.meetravel.domain.matching_form.enums.*;
 import com.meetravel.domain.matching_form.repository.MatchingFormRepository;
 import com.meetravel.domain.matching_form.repository.TravelKeywordRepository;
 import com.meetravel.domain.tour_api.TourApiAreaFeignClient;
@@ -127,6 +128,39 @@ public class MatchingFormService {
         }
 
     }
+
+    @Transactional
+    public GetMatchingFormResponse getMatchingForm(String userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        MatchingFormEntity matchingForm = matchingFormRepository.findByUser(user)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MATCHING_FORM_NOT_FOUND));
+
+        GetMatchingFormResponse.Area area = GetMatchingFormResponse.Area.builder()
+                .code(matchingForm.getAreaCode())
+                .name(matchingForm.getAreaName())
+                .build();
+
+        GetMatchingFormResponse.DetailArea detailArea = GetMatchingFormResponse.DetailArea.builder()
+                .detailCode(matchingForm.getDetailAreaCode())
+                .detailName(matchingForm.getDetailAreaName())
+                .build();
+
+        return GetMatchingFormResponse.builder()
+                .matchingFormId(matchingForm.getId())
+                .duration(matchingForm.getDuration())
+                .startDate(matchingForm.getStartDate())
+                .endDate(matchingForm.getEndDate())
+                .groupSize(matchingForm.getGroupSize())
+                .genderRatio(matchingForm.getGenderRatio())
+                .cost(matchingForm.getCost())
+                .area(area)
+                .detailArea(detailArea)
+                .build();
+
+    }
+
 
     public GetAreaResponse getArea() {
         int numOfRows = 17; // 충분한 수 넣어줌
