@@ -61,6 +61,10 @@ public class MatchingFormService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
+        if (matchingFormRepository.findByUser(user).isPresent()) {
+            throw new BadRequestException(ErrorCode.ALREADY_EXISTS_MATCHING_FORM);
+        }
+
         MatchingFormEntity matchingForm = MatchingFormEntity.builder()
                 .user(user)
                 .duration(request.getDuration())
