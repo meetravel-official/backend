@@ -304,7 +304,7 @@ public class ChatRoomService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        return userEntity.getNickname() + "님이 들어왔습니다.";
+        return userEntity.getNickname() + "님이 들어왔습니다";
     }
 
     private String getLeaveMessage(
@@ -316,7 +316,7 @@ public class ChatRoomService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        return userEntity.getNickname() + "님이 나갔습니다.";
+        return userEntity.getNickname() + "님이 나갔습니다";
     }
 
     private void validateUserJoinedChatRoom(
