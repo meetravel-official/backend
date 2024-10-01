@@ -84,6 +84,7 @@ public class SecurityConfig {
                     "http://localhost:3030",
                     "https://dev.meetravel.life",
                     "https://meetravel.life",
+                    "https://api.meetravel.life",
                     "https://cdiptangshu.github.io"
             ));
             config.setAllowCredentials(true);
