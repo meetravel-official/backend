@@ -1,7 +1,6 @@
 package com.meetravel.domain.matching_form.entity;
 
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
-import com.meetravel.domain.matching_form.dto.request.UpdateMatchingFormRequest;
 import com.meetravel.domain.matching_form.enums.Cost;
 import com.meetravel.domain.matching_form.enums.Duration;
 import com.meetravel.domain.matching_form.enums.GenderRatio;
@@ -81,17 +80,6 @@ public class MatchingFormEntity extends BaseEntity {
     public void addTravelKeyword(TravelKeywordEntity travelKeyword) {
         travelKeywordList.add(travelKeyword);
         travelKeyword.setMatchingForm(this);
-    }
-
-    public void updateMatchingForm(UpdateMatchingFormRequest request) {
-        this.duration = request.getDuration();
-        this.startDate = request.getStartDate();
-        this.endDate = request.getEndDate();
-        this.genderRatio = request.getGenderRatio();
-        this.areaCode = request.getArea().getCode();
-        this.areaName = request.getArea().getName();
-        this.detailAreaCode = request.getDetailArea().getDetailCode();
-        this.detailAreaName = request.getDetailArea().getDetailName();
     }
 
     public void joinChatRoom(ChatRoomEntity chatRoomEntity) {

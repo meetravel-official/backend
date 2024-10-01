@@ -13,8 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface MatchingFormRepository extends JpaRepository<MatchingFormEntity, Long> {
-
-    Optional<MatchingFormEntity> findByUser(UserEntity user);
     Optional<MatchingFormEntity> findByIdAndUser(Long id, UserEntity userEntity);
     List<MatchingFormEntity> findAllByGroupSizeAndGenderRatioAndStartDateBetweenAndIdNotIn(GroupSize groupSize, GenderRatio genderRatio, LocalDate to, LocalDate from, List<Long> ids);
     List<MatchingFormEntity> findAllByAreaCodeAndGroupSizeAndGenderRatioAndStartDateBetweenAndIdNotIn(String areaCode, GroupSize groupSize, GenderRatio genderRatio, LocalDate to, LocalDate from, List<Long> ids);

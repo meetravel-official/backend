@@ -1,12 +1,9 @@
 package com.meetravel.domain.matching_form.service;
 
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
+import com.meetravel.domain.chatroom.entity.UserChatRoomEntity;
 import com.meetravel.domain.matching_form.dto.request.CreateMatchingFormRequest;
-import com.meetravel.domain.matching_form.dto.request.UpdateMatchingFormRequest;
-import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
-import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
-import com.meetravel.domain.matching_form.dto.response.GetMatchApplicationFormResponse;
-import com.meetravel.domain.matching_form.dto.response.GetMatchingFormResponse;
+import com.meetravel.domain.matching_form.dto.response.*;
 import com.meetravel.domain.matching_form.entity.MatchingFormEntity;
 import com.meetravel.domain.matching_form.entity.TravelKeywordEntity;
 import com.meetravel.domain.matching_form.enums.*;
@@ -29,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.AbstractMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
@@ -37,7 +35,6 @@ import java.util.function.Function;
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.*;
-
 
 @Service
 @RequiredArgsConstructor
@@ -51,22 +48,23 @@ public class MatchingFormService {
     private final TravelKeywordRepository travelKeywordRepository;
     private final TourApiAreaFeignClient tourApiAreaFeginClient;
 
-    /**
-     * 매칭 신청서 작성
-     *
-     * @param request
-     */
     @Transactional
-    public void createMatchingForm(String userId, CreateMatchingFormRequest request) {
-        UserEntity user = userRepository.findById(userId)
+    public CreateMatchingFormResponse createMatchingForm(String userId, CreateMatchingFormRequest request) {
+        UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        if (matchingFormRepository.findByUser(user).isPresent()) {
-            throw new BadRequestException(ErrorCode.ALREADY_EXISTS_MATCHING_FORM);
+        UserChatRoomEntity joinedUserOtherChatRoomEntity = userEntity.getUserChatRooms()
+                .stream()
+                .filter(it -> it.getLeaveAt() == null)
+                .findFirst()
+                .orElse(null);
+
+        if (joinedUserOtherChatRoomEntity != null) {
+            throw new BadRequestException(ErrorCode.ALREADY_EXISTS_JOINED_CHAT_ROOM);
         }
 
         MatchingFormEntity matchingForm = MatchingFormEntity.builder()
-                .user(user)
+                .user(userEntity)
                 .duration(request.getDuration())
                 .startDate(request.getStartDate())
                 .endDate(request.getEndDate())
@@ -79,14 +77,13 @@ public class MatchingFormService {
                 .detailAreaName(request.getDetailArea().getDetailName())
                 .build();
 
-        // 매칭 신청서 저장
-        matchingFormRepository.save(matchingForm);
-        
-        // 매칭 신청서의 키워드 저장
+        MatchingFormEntity savedMatchingFormEntity = matchingFormRepository.save(matchingForm);
+
         for (TravelKeyword keyword : request.getTravelKeywordList()) {
             this.addTravelKeyword(matchingForm, keyword);
         }
 
+        return new CreateMatchingFormResponse(savedMatchingFormEntity.getId());
     }
 
     /**
@@ -106,67 +103,40 @@ public class MatchingFormService {
         }
     }
 
-
-    @Transactional
-    public void updateMatchingForm(UpdateMatchingFormRequest request) {
-        MatchingFormEntity matchingForm = matchingFormRepository
-                .findById(request.getMatchingFormId()).orElseThrow(() -> new NotFoundException(ErrorCode.MATCHING_FORM_NOT_FOUND));
-
-        /** 매칭 신청서 항목 수정(키워드 제외) */
-        matchingForm.updateMatchingForm(request);
-
-        /** 삭제할 키워드 */
-        List<Long> travelKeywordToDelete = request.getTravelKeywordToDelete();
-
-        // 현재 있는 키워드 중에서 삭제할 키워드 목록 생성
-        List<Long> keywordsToDelete = matchingForm.getTravelKeywordList().stream()
-                .filter(travelKeyword -> travelKeywordToDelete.contains(travelKeyword.getId()))
-                .map(TravelKeywordEntity::getId)
-                .toList();
-
-        travelKeywordRepository.deleteAllByTravelKeywordId(keywordsToDelete);
-
-        /** 추가할 키워드 */
-        for (TravelKeyword keyword : request.getTravelKeywordToAdd()) {
-            this.addTravelKeyword(matchingForm, keyword);
-        }
-
-    }
-
     @Transactional
     public GetMatchingFormResponse getMatchingForm(String userId) {
-        UserEntity user = userRepository.findById(userId)
+        UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        MatchingFormEntity matchingForm = matchingFormRepository.findByUser(user).orElse(null);
+        MatchingFormEntity matchingFormEntity = userEntity.getMatchingFormEntities()
+                .stream().max(Comparator.comparing(MatchingFormEntity::getId))
+                .orElse(null);
 
-        // 매칭폼이 없으면 null 반환
-        if (matchingForm == null) {
+        if (matchingFormEntity == null) {
             return null;
         }
 
         GetMatchingFormResponse.Area area = GetMatchingFormResponse.Area.builder()
-                .code(matchingForm.getAreaCode())
-                .name(matchingForm.getAreaName())
+                .code(matchingFormEntity.getAreaCode())
+                .name(matchingFormEntity.getAreaName())
                 .build();
 
         GetMatchingFormResponse.DetailArea detailArea = GetMatchingFormResponse.DetailArea.builder()
-                .detailCode(matchingForm.getDetailAreaCode())
-                .detailName(matchingForm.getDetailAreaName())
+                .detailCode(matchingFormEntity.getDetailAreaCode())
+                .detailName(matchingFormEntity.getDetailAreaName())
                 .build();
 
         return GetMatchingFormResponse.builder()
-                .matchingFormId(matchingForm.getId())
-                .duration(matchingForm.getDuration())
-                .startDate(matchingForm.getStartDate())
-                .endDate(matchingForm.getEndDate())
-                .groupSize(matchingForm.getGroupSize())
-                .genderRatio(matchingForm.getGenderRatio())
-                .cost(matchingForm.getCost())
+                .matchingFormId(matchingFormEntity.getId())
+                .duration(matchingFormEntity.getDuration())
+                .startDate(matchingFormEntity.getStartDate())
+                .endDate(matchingFormEntity.getEndDate())
+                .groupSize(matchingFormEntity.getGroupSize())
+                .genderRatio(matchingFormEntity.getGenderRatio())
+                .cost(matchingFormEntity.getCost())
                 .area(area)
                 .detailArea(detailArea)
                 .build();
-
     }
 
 

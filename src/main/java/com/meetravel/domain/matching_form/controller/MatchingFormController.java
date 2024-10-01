@@ -1,11 +1,7 @@
 package com.meetravel.domain.matching_form.controller;
 
 import com.meetravel.domain.matching_form.dto.request.CreateMatchingFormRequest;
-import com.meetravel.domain.matching_form.dto.request.UpdateMatchingFormRequest;
-import com.meetravel.domain.matching_form.dto.response.GetAreaResponse;
-import com.meetravel.domain.matching_form.dto.response.GetDetailAreaResponse;
-import com.meetravel.domain.matching_form.dto.response.GetMatchApplicationFormResponse;
-import com.meetravel.domain.matching_form.dto.response.GetMatchingFormResponse;
+import com.meetravel.domain.matching_form.dto.response.*;
 import com.meetravel.domain.matching_form.service.MatchingFormService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,22 +20,23 @@ public class MatchingFormController implements MatchingFormControllerDoc {
     private final MatchingFormService matchingFormService;
 
     @Override
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<GetMatchingFormResponse> getMatchingForm(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(matchingFormService.getMatchingForm(userDetails.getUsername()));
     }
 
     @Override
-    @PostMapping("")
-    public void createMatchingForm(@AuthenticationPrincipal UserDetails userDetails,
-                                              @RequestBody @Valid CreateMatchingFormRequest request) {
-        matchingFormService.createMatchingForm(userDetails.getUsername(), request);
-    }
+    @PostMapping
+    public ResponseEntity<CreateMatchingFormResponse> createMatchingForm(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody @Valid CreateMatchingFormRequest request
+    ) {
+        CreateMatchingFormResponse response = matchingFormService.createMatchingForm(
+                userDetails.getUsername(),
+                request
+        );
 
-    @Override
-    @PutMapping("")
-    public void updateMatchingForm(@RequestBody @Valid UpdateMatchingFormRequest request) {
-        matchingFormService.updateMatchingForm(request);
+        return ResponseEntity.ok(response);
     }
 
     @Override
