@@ -226,7 +226,12 @@ public class ChatRoomService {
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_EXIST_MATCHING_FORM_CHAT_ROOM));
 
-        return new GetChatRoomResponse(userEntities, matchingFormEntity);
+        UserEntity botUserEntity = userRepository.findAllBySocialType(SocialType.BOT)
+                .stream()
+                .max(Comparator.comparing(UserEntity::getUserId))
+                .orElse(null);
+
+        return new GetChatRoomResponse(botUserEntity, userEntities, matchingFormEntity);
     }
 
     @Transactional(readOnly = true)

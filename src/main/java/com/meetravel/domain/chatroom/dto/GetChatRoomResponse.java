@@ -10,6 +10,7 @@ import com.meetravel.domain.user.entity.UserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -23,8 +24,14 @@ public class GetChatRoomResponse {
     @Schema(description = "여행 기간")
     private final TravelPlanDate travelPlanDate;
 
-    public GetChatRoomResponse(List<UserEntity> userEntities, MatchingFormEntity matchingFormEntity) {
-        this.joinedUsers = userEntities.stream()
+    public GetChatRoomResponse(UserEntity botUserEntity, List<UserEntity> userEntities, MatchingFormEntity matchingFormEntity) {
+        List<UserEntity> tempUserEntities = new ArrayList<>();
+        if (botUserEntity != null) {
+            tempUserEntities.add(botUserEntity);
+        }
+        tempUserEntities.addAll(userEntities);
+
+        this.joinedUsers = tempUserEntities.stream()
                 .map(ChatRoomUserPreviewInfo::new)
                 .toList();
         this.joinedPersons = new ChatRoomPerson(userEntities);
