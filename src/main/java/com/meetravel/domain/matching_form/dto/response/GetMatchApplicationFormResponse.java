@@ -10,12 +10,19 @@ public class GetMatchApplicationFormResponse {
             nullable = true
     )
     private final Long matchingFormId;
+    @Schema(
+            description = "매칭된 채팅방 고유 번호",
+            nullable = true
+    )
+    private final Long chatRoomId;
 
     public GetMatchApplicationFormResponse() {
         this.matchingFormId = null;
+        this.chatRoomId = null;
     }
 
-    public GetMatchApplicationFormResponse(Long matchingFormId) {
+    public GetMatchApplicationFormResponse(Long matchingFormId, Long chatRoomId) {
         this.matchingFormId = matchingFormId;
+        this.chatRoomId = chatRoomId;
     }
 }

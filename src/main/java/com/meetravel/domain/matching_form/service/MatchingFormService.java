@@ -278,7 +278,7 @@ public class MatchingFormService {
                 )
                 .map(Map.Entry::getKey)
                 .findFirst()
-                .map(it -> new GetMatchApplicationFormResponse(it.getValue().getId()))
+                .map(it -> new GetMatchApplicationFormResponse(it.getValue().getId(), it.getKey().getId()))
                 .orElse(new GetMatchApplicationFormResponse());
     }
 }
