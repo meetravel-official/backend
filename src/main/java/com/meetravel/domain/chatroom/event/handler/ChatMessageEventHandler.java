@@ -1,6 +1,7 @@
 package com.meetravel.domain.chatroom.event.handler;
 
 import com.meetravel.domain.chatroom.dto.ChatMessage;
+import com.meetravel.domain.chatroom.event.model.ChatMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
@@ -18,5 +19,13 @@ public class ChatMessageEventHandler {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleChatMessageEvent(ChatMessage chatMessage) {
         rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.getChatRoomId(), chatMessage);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleChatMessagesEvent(ChatMessages chatMessages) {
+        chatMessages.chatMessages().forEach(chatMessage -> {
+            rabbitTemplate.convertAndSend("chat.exchange", "chat.rooms." + chatMessage.getChatRoomId(), chatMessage);
+        });
     }
 }

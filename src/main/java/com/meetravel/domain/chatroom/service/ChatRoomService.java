@@ -5,6 +5,7 @@ import com.meetravel.domain.chatroom.entity.ChatMessageEntity;
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.domain.chatroom.entity.UserChatRoomEntity;
 import com.meetravel.domain.chatroom.enums.ChatMessageType;
+import com.meetravel.domain.chatroom.event.model.ChatMessages;
 import com.meetravel.domain.chatroom.repository.ChatMessageRepository;
 import com.meetravel.domain.chatroom.repository.ChatRoomRepository;
 import com.meetravel.domain.chatroom.repository.UserChatRoomRepository;
@@ -12,6 +13,7 @@ import com.meetravel.domain.chatroom.vo.ChatRoomPreviewInfo;
 import com.meetravel.domain.matching_form.entity.MatchingFormEntity;
 import com.meetravel.domain.matching_form.repository.MatchingFormRepository;
 import com.meetravel.domain.user.entity.UserEntity;
+import com.meetravel.domain.user.enums.SocialType;
 import com.meetravel.domain.user.repository.UserRepository;
 import com.meetravel.global.exception.BadRequestException;
 import com.meetravel.global.exception.ErrorCode;
@@ -23,8 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -275,13 +276,14 @@ public class ChatRoomService {
             String userId,
             Long chatRoomId
     ) {
-        String joinedMessage = this.getJoinedMessage(userId);
-        this.sendMessageAndEventPublisher(
-                userId,
-                chatRoomId,
-                ChatMessageType.JOIN,
-                joinedMessage
-        );
+        ChatMessageEntity joinedChatMessageEntity = this.getJoinedChatMessageEntity(userId, chatRoomId);
+        List<ChatMessageEntity> welcomeBotChatMessageEntities = this.getWelcomeBotChatMessageEntities(chatRoomId);
+
+        List<ChatMessageEntity> sendChatMessageEntities = new ArrayList<>();
+        sendChatMessageEntities.add(joinedChatMessageEntity);
+        sendChatMessageEntities.addAll(welcomeBotChatMessageEntities);
+
+        this.sendMessagesAndEventPublisher(sendChatMessageEntities);
     }
 
     private void sendLeaveMessage(
@@ -300,11 +302,49 @@ public class ChatRoomService {
         );
     }
 
-    private String getJoinedMessage(String userId) {
+    private ChatMessageEntity getJoinedChatMessageEntity(String userId, Long chatRoomId) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        return userEntity.getNickname() + "님이 들어왔습니다";
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
+        ChatMessageEntity chatMessageEntity = new ChatMessageEntity(
+                userEntity,
+                chatRoomEntity,
+                userEntity.getNickname() + "님이 들어왔습니다",
+                ChatMessageType.JOIN
+        );
+
+        return chatMessageRepository.save(chatMessageEntity);
+    }
+
+    private List<ChatMessageEntity> getWelcomeBotChatMessageEntities(Long chatRoomId) {
+        UserEntity botUserEntity = userRepository.findAllBySocialType(SocialType.BOT)
+                .stream()
+                .max(Comparator.comparing(UserEntity::getUserId))
+                .orElse(null);
+        if (botUserEntity == null) return Collections.emptyList();
+
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));
+
+        List<String> welcomeMessages = List.of(
+                "안녕하세요, 미트래블입니다!",
+                "여행 계획을 시작해볼까요? 여행의 관광지, 식당, 숙박 등 장소를 정하는 방법은 간단해요.",
+                "미트래블의 여행정보 탭에서 추천 장소를 확인하고, 채팅방으로 공유해 보세요."
+        );
+
+        return welcomeMessages.stream()
+                .map(message -> chatMessageRepository.save(
+                        new ChatMessageEntity(
+                            botUserEntity,
+                            chatRoomEntity,
+                            message,
+                            ChatMessageType.BOT
+                        )
+                ))
+                .toList();
     }
 
     private String getLeaveMessage(
@@ -392,6 +432,10 @@ public class ChatRoomService {
 
         ChatMessageEntity savedChatMessageEntity = chatMessageRepository.save(chatMessageEntity);
         applicationEventPublisher.publishEvent(new ChatMessage(savedChatMessageEntity));
+    }
+
+    private void sendMessagesAndEventPublisher(List<ChatMessageEntity> chatMessageEntities) {
+        applicationEventPublisher.publishEvent(new ChatMessages(chatMessageEntities.stream().map(ChatMessage::new).toList()));
     }
 
 }
