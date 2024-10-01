@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/files")
-public class FileController {
+public class FileController implements FileControllerDoc {
     private final S3Service s3Service;
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})

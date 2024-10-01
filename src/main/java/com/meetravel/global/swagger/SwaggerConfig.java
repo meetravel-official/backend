@@ -30,7 +30,8 @@ public class SwaggerConfig {
         ADMIN("admin", "/admin"),
         MATCHING_FORM("matching_form","/matching-form"),
         CHAT("chat", "/chat-rooms"),
-        PLACE("place", "/places");
+        PLACE("place", "/places"),
+        FILE("file", "/files");
 
         private final String group;
         private final String urlPrefix;
@@ -119,5 +120,12 @@ public class SwaggerConfig {
                 .build();
     }
 
-
+    @Bean
+    public GroupedOpenApi fileApi() {
+        return GroupedOpenApi.builder()
+                .group(ApiUrl.FILE.getGroup())
+                .pathsToMatch(ApiUrl.FILE.getUrlPrefix() + "/**")
+                .packagesToScan(BASE_PACKAGE + "." + "file")
+                .build();
+    }
 }
