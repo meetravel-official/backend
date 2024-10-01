@@ -138,8 +138,12 @@ public class MatchingFormService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        MatchingFormEntity matchingForm = matchingFormRepository.findByUser(user)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MATCHING_FORM_NOT_FOUND));
+        MatchingFormEntity matchingForm = matchingFormRepository.findByUser(user).orElse(null);
+
+        // 매칭폼이 없으면 null 반환
+        if (matchingForm == null) {
+            return null;
+        }
 
         GetMatchingFormResponse.Area area = GetMatchingFormResponse.Area.builder()
                 .code(matchingForm.getAreaCode())
