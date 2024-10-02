@@ -2,6 +2,10 @@ server:
   port: 5000
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
   datasource:
     driver-class-name: com.amazonaws.secretsmanager.sql.AWSSecretsManagerMySQLDriver
     url: jdbc-secretsmanager:mysql://meetravel-prod.c9sm844qqnvz.us-east-1.rds.amazonaws.com:3306/${MEETRAVEL_DB_SCHEMA}
