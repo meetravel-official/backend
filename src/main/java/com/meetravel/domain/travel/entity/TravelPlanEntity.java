@@ -24,6 +24,9 @@ public class TravelPlanEntity extends BaseEntity {
     @OneToMany(mappedBy = "travelPlan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DailyPlanEntity> dailyPlans;
 
+    @OneToMany(mappedBy = "travelPlan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ShareTravelPlaceEntity> shareTravelPlaces;
+
     protected TravelPlanEntity() {
         this.id = 0L;
     }
