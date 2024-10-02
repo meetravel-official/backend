@@ -84,6 +84,33 @@ dependencies {
     }
 }
 
+tasks.bootJar {
+    dependsOn('copyPlatformFiles')
+}
+
+tasks.register('copyPlatformFiles', Copy) {
+    from('.platform')
+    into(layout.buildDirectory.dir("libs/.platform").get())
+}
+
+bootJar {
+    from(copyPlatformFiles) {
+        into('.platform')
+    }
+}
+
+tasks.register('createZip', Zip) {
+    dependsOn(bootJar)
+
+    from(layout.buildDirectory.dir('libs').get()) {
+        include("meetravel-${version}.jar")
+    }
+    from(layout.buildDirectory.dir('.platform').get()) {
+        into('.platform')
+    }
+    archiveFileName = "${project.name}-${version}.zip"
+    destinationDirectory = file(layout.buildDirectory.dir('distributions').get())
+}
 
 tasks.named('test') {
     useJUnitPlatform()
