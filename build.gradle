@@ -86,6 +86,7 @@ dependencies {
 
 tasks.bootJar {
     dependsOn('copyPlatformFiles')
+    dependsOn('copyEbextensionsFiles')
 }
 
 tasks.register('copyPlatformFiles', Copy) {
@@ -93,9 +94,17 @@ tasks.register('copyPlatformFiles', Copy) {
     into(layout.buildDirectory.dir("libs/.platform").get())
 }
 
+tasks.register('copyEbextensionsFiles', Copy) {
+    from('.ebextensions')
+    into(layout.buildDirectory.dir("libs/.ebextensions").get())
+}
+
 bootJar {
     from(copyPlatformFiles) {
         into('.platform')
+    }
+    from(copyEbextensionsFiles) {
+        into('.ebextensions')
     }
 }
 
@@ -103,11 +112,15 @@ tasks.register('createZip', Zip) {
     dependsOn(bootJar)
 
     from(layout.buildDirectory.dir('libs').get()) {
-        include("meetravel-${version}.jar")
+        include("${project.name}-${version}.jar")
     }
-    from(layout.buildDirectory.dir('.platform').get()) {
+    from(layout.buildDirectory.dir('libs/.platform').get()) {
         into('.platform')
     }
+    from(layout.buildDirectory.dir('libs/.ebextensions').get()) {
+        into('.ebextensions')
+    }
+
     archiveFileName = "${project.name}-${version}.zip"
     destinationDirectory = file(layout.buildDirectory.dir('distributions').get())
 }
