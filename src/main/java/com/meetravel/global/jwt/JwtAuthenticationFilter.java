@@ -98,7 +98,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public boolean shouldNotFilter(HttpServletRequest request) {
         return Stream.of(
                 new AntPathRequestMatcher("/error"),
-                new AntPathRequestMatcher("/ws/**"),
+                new AntPathRequestMatcher("/ws/chat/info", HttpMethod.GET.name()),
                 new AntPathRequestMatcher("/favicon.ico", HttpMethod.GET.name()),
                 new AntPathRequestMatcher("/signup/check-nickname", HttpMethod.GET.name()),
                 new AntPathRequestMatcher("/files", HttpMethod.POST.name())
