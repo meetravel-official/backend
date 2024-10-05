@@ -1,6 +1,7 @@
 package com.meetravel.domain.chatroom.entity;
 
 import com.meetravel.domain.matching_form.entity.MatchingFormEntity;
+import com.meetravel.domain.travel.entity.TravelPlanEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -22,6 +23,9 @@ public class ChatRoomEntity {
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatchingFormEntity> matchingForms = new ArrayList<>();
+
+    @OneToOne(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    private TravelPlanEntity travelPlan;
 
     @Column(name = "CREATED_AT", nullable = false, updatable = false)
     private final LocalDateTime createdAt;

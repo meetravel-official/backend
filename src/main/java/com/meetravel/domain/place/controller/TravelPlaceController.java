@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/places")
-public class TravelPlaceController implements TravelPlaceControllerDoc{
+public class TravelPlaceController implements TravelPlaceControllerDoc {
 
     private final TravelPlaceService travelPlaceService;
 
@@ -22,6 +24,19 @@ public class TravelPlaceController implements TravelPlaceControllerDoc{
     @PostMapping("/reviews")
     public void review(@RequestParam String placeId) {
         travelPlaceService.review(placeId);
+    }
+
+    @PostMapping("/share/{placeId}")
+    public ResponseEntity<Object> shareTravelPlace(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable String placeId
+    ) {
+        travelPlaceService.shareTravelPlace(
+                userDetails.getUsername(),
+                placeId
+        );
+
+        return ResponseEntity.noContent().build();
     }
 
     @Override

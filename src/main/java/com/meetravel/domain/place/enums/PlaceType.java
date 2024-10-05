@@ -30,4 +30,12 @@ public enum PlaceType implements BaseEnum {
         return null;
     }
 
+    public static PlaceType generateFromContentTypeId(String contentTypeId) {
+        return switch (contentTypeId) {
+            case "32" -> PlaceType.ACCOMMODATION;
+            case "39" -> PlaceType.RESTAURANT;
+            default -> PlaceType.TOURIST_SPOT;
+        };
+    }
+
 }

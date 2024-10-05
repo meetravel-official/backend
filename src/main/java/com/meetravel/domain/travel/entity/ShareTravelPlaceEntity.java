@@ -24,4 +24,14 @@ public class ShareTravelPlaceEntity {
     protected ShareTravelPlaceEntity() {
         this.id = 0L;
     }
+
+    public ShareTravelPlaceEntity(
+            TravelPlanEntity travelPlanEntity,
+            TravelPlaceEntity travelPlaceEntity
+    ) {
+        this();
+
+        this.travelPlan = travelPlanEntity;
+        this.travelPlace = travelPlaceEntity;
+    }
 }
