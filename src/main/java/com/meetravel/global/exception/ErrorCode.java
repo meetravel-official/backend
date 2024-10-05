@@ -39,7 +39,8 @@ public enum ErrorCode {
     NOT_VALID_MESSAGE_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 메세지 유형입니다."),
     FULLED_GROUP_SIZE_CHAT_ROOM(HttpStatus.BAD_REQUEST, "정원 모집이 완료된 채팅방입니다."),
     NOT_FOUND_CHAT_MESSAGE(HttpStatus.NOT_FOUND, "알 수 없는 채팅 메세지입니다."),
-    ALREADY_EXISTS_MATCHING_FORM(HttpStatus.BAD_REQUEST, "작성된 매칭 신청서가 이미 존재합니다.");
+    ALREADY_EXISTS_MATCHING_FORM(HttpStatus.BAD_REQUEST, "작성된 매칭 신청서가 이미 존재합니다."),
+    NOT_FOUND_TRAVEL_PLAN(HttpStatus.NOT_FOUND, "채팅방에 연결된 여행 계획서를 찾을 수 없습니다.");
 
     ErrorCode(HttpStatus status, String message) {
         this.status = status;

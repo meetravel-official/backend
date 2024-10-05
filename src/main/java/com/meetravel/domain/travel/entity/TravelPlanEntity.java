@@ -3,9 +3,11 @@ package com.meetravel.domain.travel.entity;
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.global.audit.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.List;
 
+@Getter
 @Entity
 @Table(name = "travel_plan")
 public class TravelPlanEntity extends BaseEntity {

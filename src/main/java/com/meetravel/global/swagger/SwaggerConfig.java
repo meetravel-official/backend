@@ -31,7 +31,8 @@ public class SwaggerConfig {
         MATCHING_FORM("matching_form","/matching-form"),
         CHAT("chat", "/chat-rooms"),
         PLACE("place", "/places"),
-        FILE("file", "/files");
+        FILE("file", "/files"),
+        TRAVEL("travel", "/travels");
 
         private final String group;
         private final String urlPrefix;
@@ -126,6 +127,15 @@ public class SwaggerConfig {
                 .group(ApiUrl.FILE.getGroup())
                 .pathsToMatch(ApiUrl.FILE.getUrlPrefix() + "/**")
                 .packagesToScan(BASE_PACKAGE + "." + "file")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi travelApi() {
+        return GroupedOpenApi.builder()
+                .group(ApiUrl.TRAVEL.getGroup())
+                .pathsToMatch(ApiUrl.TRAVEL.getUrlPrefix() + "/**")
+                .packagesToScan(BASE_PACKAGE + "." + "travel")
                 .build();
     }
 }

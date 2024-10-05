@@ -4,7 +4,9 @@ import com.meetravel.domain.matching_form.enums.TravelKeyword;
 import com.meetravel.global.audit.BaseEntity;
 import com.meetravel.global.converter.TravelKeywordConverter;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "travel_plan_keyword")
 public class TravelPlanKeywordEntity extends BaseEntity {

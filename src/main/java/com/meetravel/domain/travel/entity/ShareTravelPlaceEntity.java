@@ -2,7 +2,9 @@ package com.meetravel.domain.travel.entity;
 
 import com.meetravel.domain.place.entity.TravelPlaceEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "share_travel_place")
 public class ShareTravelPlaceEntity {

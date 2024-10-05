@@ -2,10 +2,12 @@ package com.meetravel.domain.travel.entity;
 
 import com.meetravel.global.audit.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(name = "daily_plan")
 public class DailyPlanEntity extends BaseEntity {
