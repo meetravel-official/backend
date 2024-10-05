@@ -20,6 +20,7 @@ public interface ChatRoomControllerDoc {
             description = """
                     [operation]
                     - 채팅방을 생성합니다.
+                    - 작성된 매칭 신청서를 기반으로 여행 계획서를 생성합니다.
 
                     [validation]
                     - 존재하지 않는 회원은 채팅방에 참여할 수 없습니다.

@@ -32,4 +32,10 @@ public class TravelPlanEntity extends BaseEntity {
     protected TravelPlanEntity() {
         this.id = 0L;
     }
+
+    public TravelPlanEntity(ChatRoomEntity chatRoomEntity) {
+        this();
+
+        this.chatRoom = chatRoomEntity;
+    }
 }

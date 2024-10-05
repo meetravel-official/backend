@@ -35,4 +35,14 @@ public class DailyPlanEntity extends BaseEntity {
     protected DailyPlanEntity() {
         this.id = 0L;
     }
+
+    public DailyPlanEntity(
+            TravelPlanEntity travelPlanEntity,
+            LocalDate planDate
+    ) {
+        this();
+
+        this.travelPlan = travelPlanEntity;
+        this.planDate = planDate;
+    }
 }

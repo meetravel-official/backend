@@ -12,6 +12,12 @@ import com.meetravel.domain.chatroom.repository.UserChatRoomRepository;
 import com.meetravel.domain.chatroom.vo.ChatRoomPreviewInfo;
 import com.meetravel.domain.matching_form.entity.MatchingFormEntity;
 import com.meetravel.domain.matching_form.repository.MatchingFormRepository;
+import com.meetravel.domain.travel.entity.DailyPlanEntity;
+import com.meetravel.domain.travel.entity.TravelPlanEntity;
+import com.meetravel.domain.travel.entity.TravelPlanKeywordEntity;
+import com.meetravel.domain.travel.repository.DailyPlanRepository;
+import com.meetravel.domain.travel.repository.TravelPlanKeywordRepository;
+import com.meetravel.domain.travel.repository.TravelPlanRepository;
 import com.meetravel.domain.user.entity.UserEntity;
 import com.meetravel.domain.user.enums.SocialType;
 import com.meetravel.domain.user.repository.UserRepository;
@@ -25,7 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -36,6 +44,9 @@ public class ChatRoomService {
     private final MatchingFormRepository matchingFormRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final TravelPlanRepository travelPlanRepository;
+    private final TravelPlanKeywordRepository travelPlanKeywordRepository;
+    private final DailyPlanRepository dailyPlanRepository;
 
     @Transactional
     public CreateChatRoomResponse createChatRoom(
@@ -55,7 +66,29 @@ public class ChatRoomService {
         ChatRoomEntity savedChatRoomEntity = chatRoomRepository.save(new ChatRoomEntity());
 
         matchingFormEntity.joinChatRoom(savedChatRoomEntity);
-        matchingFormRepository.save(matchingFormEntity);
+        MatchingFormEntity savedMatchingFormEntity = matchingFormRepository.save(matchingFormEntity);
+
+        TravelPlanEntity travelPlanEntity = new TravelPlanEntity(savedChatRoomEntity);
+        TravelPlanEntity savedTravelPlanEntity = travelPlanRepository.save(travelPlanEntity);
+
+        List<TravelPlanKeywordEntity> travelPlanKeywordEntities = savedMatchingFormEntity.getTravelKeywordList()
+                .stream()
+                .map(it -> new TravelPlanKeywordEntity(
+                        savedTravelPlanEntity,
+                        it.getKeyword()
+                ))
+                .toList();
+        travelPlanKeywordRepository.saveAll(travelPlanKeywordEntities);
+
+        List<DailyPlanEntity> dailyPlanEntities = Stream
+                .iterate(savedMatchingFormEntity.getStartDate(), date -> date.plusDays(1))
+                .limit(ChronoUnit.DAYS.between(savedMatchingFormEntity.getStartDate(), savedMatchingFormEntity.getEndDate()) + 1)
+                .map(it -> new DailyPlanEntity(
+                        savedTravelPlanEntity,
+                        it
+                ))
+                .toList();
+        dailyPlanRepository.saveAll(dailyPlanEntities);
 
         return new CreateChatRoomResponse(savedChatRoomEntity);
     }

@@ -26,4 +26,14 @@ public class TravelPlanKeywordEntity extends BaseEntity {
     protected TravelPlanKeywordEntity() {
         this.id = 0L;
     }
+
+    public TravelPlanKeywordEntity(
+            TravelPlanEntity travelPlanEntity,
+            TravelKeyword travelKeyword
+    ) {
+        this();
+
+        this.keyword = travelKeyword;
+        this.travelPlan = travelPlanEntity;
+    }
 }
