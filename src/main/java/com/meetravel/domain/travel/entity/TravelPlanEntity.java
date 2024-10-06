@@ -29,6 +29,10 @@ public class TravelPlanEntity extends BaseEntity {
     @OneToMany(mappedBy = "travelPlan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShareTravelPlaceEntity> shareTravelPlaces;
 
+    public void removeTravelPlanKeywords(List<TravelPlanKeywordEntity> travelPlanKeywordEntities) {
+        this.travelPlanKeywords.removeAll(travelPlanKeywordEntities);
+    }
+
     protected TravelPlanEntity() {
         this.id = 0L;
     }

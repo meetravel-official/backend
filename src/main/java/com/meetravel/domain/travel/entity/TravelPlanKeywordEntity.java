@@ -23,6 +23,12 @@ public class TravelPlanKeywordEntity extends BaseEntity {
     @JoinColumn(name = "TRAVEL_PLAN_ID")
     private TravelPlanEntity travelPlan;
 
+    public TravelPlanKeywordEntity deleteMapping() {
+        this.travelPlan = null;
+
+        return this;
+    }
+
     protected TravelPlanKeywordEntity() {
         this.id = 0L;
     }
