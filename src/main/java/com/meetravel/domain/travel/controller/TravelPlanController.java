@@ -15,19 +15,6 @@ import org.springframework.web.bind.annotation.*;
 public class TravelPlanController implements TravelPlanControllerDoc {
     private final TravelPlanService travelPlanService;
 
-    @PutMapping("/plans/keywords/chat-rooms/{chatRoomId}")
-    public void modifyTravelPlanKeywords(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @PathVariable Long chatRoomId,
-            @RequestBody ModifyTravelPlanKeywordRequest request
-    ) {
-        travelPlanService.modifyTravelPlanKeywords(
-                userDetails.getUsername(),
-                chatRoomId,
-                request
-        );
-    }
-
     @Override
     @GetMapping("/plans/chat-rooms/{chatRoomId}")
     public ResponseEntity<GetChatRoomTravelPlanResponse> getTravelPlanWithChatRoom(
@@ -40,5 +27,19 @@ public class TravelPlanController implements TravelPlanControllerDoc {
         );
 
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @PutMapping("/plans/keywords/chat-rooms/{chatRoomId}")
+    public void modifyTravelPlanKeywords(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long chatRoomId,
+            @RequestBody ModifyTravelPlanKeywordRequest request
+    ) {
+        travelPlanService.modifyTravelPlanKeywords(
+                userDetails.getUsername(),
+                chatRoomId,
+                request
+        );
     }
 }
