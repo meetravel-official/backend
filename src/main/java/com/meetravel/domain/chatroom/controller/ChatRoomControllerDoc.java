@@ -88,6 +88,16 @@ public interface ChatRoomControllerDoc {
     ResponseEntity<GetMyChatRoomResponse> getMyChatRooms(@AuthenticationPrincipal UserDetails userDetails);
 
     @Operation(
+            summary = "실시간 여행 매칭",
+            description = """
+                    [operation]
+                    - 가장 최근에 매칭이 시작된 순서로 9개의 채팅방을 보여줍니다.
+                    - 내가 입장했던 채팅방은 제외하고 보여집니다.
+                    """
+    )
+    ResponseEntity<SearchLiveChatRoomResponse> searchLiveChatRooms(@AuthenticationPrincipal UserDetails userDetails);
+
+    @Operation(
             summary = "채팅방 정보 조회",
             description = """
                     [operation]

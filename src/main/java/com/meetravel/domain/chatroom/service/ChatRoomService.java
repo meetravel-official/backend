@@ -27,6 +27,7 @@ import com.meetravel.global.exception.NotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -225,6 +226,44 @@ public class ChatRoomService {
                 .toList();
 
         return new GetMyChatRoomResponse(chatRoomPreviewInfos);
+    }
+
+    @Transactional(readOnly = true)
+    public SearchLiveChatRoomResponse searchLiveChatRooms(String userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        List<Long> previousChatRoomIds = userEntity.getUserChatRooms()
+                .stream()
+                .map(it -> it.getChatRoom().getId())
+                .toList();
+
+        List<ChatRoomEntity> chatRoomEntities = chatRoomRepository.findTop9ByIdNotIn(
+                previousChatRoomIds,
+                Sort.by(Sort.Direction.DESC, "id")
+        );
+
+        List<ChatRoomPreviewInfo> chatRoomPreviewInfos = chatRoomEntities
+                .stream()
+                .map(chatRoomEntity -> {
+                    MatchingFormEntity matchingFormEntity = chatRoomEntity.getMatchingForms()
+                            .stream()
+                            .findFirst()
+                            .orElse(null);
+                    if (matchingFormEntity == null) return null;
+
+                    List<UserEntity> joinedUserEntities = chatRoomEntity.getUserChatRooms()
+                            .stream()
+                            .filter(it -> it.getLeaveAt() == null)
+                            .map(UserChatRoomEntity::getUser)
+                            .toList();
+
+                    return new ChatRoomPreviewInfo(chatRoomEntity, matchingFormEntity, joinedUserEntities);
+                })
+                .filter(Objects::nonNull)
+                .toList();
+
+        return new SearchLiveChatRoomResponse(chatRoomPreviewInfos);
     }
 
     @Transactional(readOnly = true)

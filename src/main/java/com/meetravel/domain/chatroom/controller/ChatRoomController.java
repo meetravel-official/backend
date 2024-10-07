@@ -67,6 +67,16 @@ public class ChatRoomController implements ChatRoomControllerDoc {
     }
 
     @Override
+    @GetMapping("/search/live")
+    public ResponseEntity<SearchLiveChatRoomResponse> searchLiveChatRooms(@AuthenticationPrincipal UserDetails userDetails) {
+        SearchLiveChatRoomResponse response = chatRoomService.searchLiveChatRooms(userDetails.getUsername());
+
+        return ResponseEntity.ok(response);
+    }
+
+
+
+    @Override
     @GetMapping("/{chatRoomId}")
     public ResponseEntity<GetChatRoomResponse> getChatRoom(
             @AuthenticationPrincipal UserDetails userDetails,
