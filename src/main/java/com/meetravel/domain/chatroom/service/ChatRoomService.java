@@ -103,11 +103,16 @@ public class ChatRoomService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        MatchingFormEntity myMatchingFormEntity = userEntity.getMatchingFormEntities()
-                .stream()
-                .filter(it -> it.getId().equals(matchingFormId))
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(ErrorCode.MATCHING_FORM_NOT_FOUND));
+        MatchingFormEntity myMatchingFormEntity;
+        if (matchingFormId != null && matchingFormId > 0) {
+            myMatchingFormEntity = userEntity.getMatchingFormEntities()
+                    .stream()
+                    .filter(it -> it.getId().equals(matchingFormId))
+                    .findFirst()
+                    .orElseThrow(() -> new NotFoundException(ErrorCode.MATCHING_FORM_NOT_FOUND));
+        } else {
+            myMatchingFormEntity = null;
+        }
 
         ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));

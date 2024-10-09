@@ -8,7 +8,7 @@ import lombok.Getter;
 public class JoinChatRoomRequest {
     @Schema(
             description = "매칭 신청서 고유 번호",
-            requiredMode = Schema.RequiredMode.NOT_REQUIRED
+            requiredMode = Schema.RequiredMode.REQUIRED
     )
     private final Long matchingFormId;
 

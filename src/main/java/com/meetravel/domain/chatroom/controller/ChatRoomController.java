@@ -35,12 +35,12 @@ public class ChatRoomController implements ChatRoomControllerDoc {
     public ResponseEntity<Object> joinChatRoom(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long chatRoomId,
-            @RequestBody JoinChatRoomRequest request
+            @RequestBody(required = false) JoinChatRoomRequest request
     ) {
         chatRoomService.joinChatRoom(
                 userDetails.getUsername(),
                 chatRoomId,
-                request.getMatchingFormId()
+                request == null ? null : request.getMatchingFormId()
         );
 
         return ResponseEntity.noContent().build();
@@ -75,8 +75,6 @@ public class ChatRoomController implements ChatRoomControllerDoc {
 
         return ResponseEntity.ok(response);
     }
-
-
 
     @Override
     @GetMapping("/{chatRoomId}")
