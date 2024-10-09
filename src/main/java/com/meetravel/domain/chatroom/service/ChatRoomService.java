@@ -97,10 +97,17 @@ public class ChatRoomService {
     @Transactional
     public void joinChatRoom(
             String userId,
-            Long chatRoomId
+            Long chatRoomId,
+            Long matchingFormId
     ) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        MatchingFormEntity myMatchingFormEntity = userEntity.getMatchingFormEntities()
+                .stream()
+                .filter(it -> it.getId().equals(matchingFormId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(ErrorCode.MATCHING_FORM_NOT_FOUND));
 
         ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.CHAT_ROOM_NOT_FOUND));
@@ -125,7 +132,11 @@ public class ChatRoomService {
             throw new BadRequestException(ErrorCode.ALREADY_EXISTS_JOINED_CHAT_ROOM);
         }
 
-        MatchingFormEntity matchingFormEntity = chatRoomEntity.getMatchingForms()
+        if (myMatchingFormEntity != null && myMatchingFormEntity.getChatRoom() != null && !chatRoomEntity.getId().equals(myMatchingFormEntity.getChatRoom().getId())) {
+            throw new BadRequestException(ErrorCode.ALREADY_EXISTS_ROOM_WITH_MATCHING_FORM);
+        }
+
+        MatchingFormEntity chatRoomMatchingFormEntity = chatRoomEntity.getMatchingForms()
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_EXIST_MATCHING_FORM_CHAT_ROOM));
@@ -135,8 +146,13 @@ public class ChatRoomService {
                 .filter(it -> it.getLeaveAt() == null)
                 .count();
 
-        if (joinedUserCount >= matchingFormEntity.getGroupSize().getNumber()) {
+        if (joinedUserCount >= chatRoomMatchingFormEntity.getGroupSize().getNumber()) {
             throw new BadRequestException(ErrorCode.FULLED_GROUP_SIZE_CHAT_ROOM);
+        }
+
+        if (myMatchingFormEntity != null && myMatchingFormEntity.getChatRoom() == null) {
+            myMatchingFormEntity.joinChatRoom(chatRoomEntity);
+            matchingFormRepository.save(myMatchingFormEntity);
         }
 
         userChatRoomRepository.save(
