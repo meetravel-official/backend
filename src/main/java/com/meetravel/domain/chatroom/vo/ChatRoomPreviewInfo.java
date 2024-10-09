@@ -10,6 +10,7 @@ import com.meetravel.domain.user.entity.UserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Getter
@@ -22,10 +23,14 @@ public class ChatRoomPreviewInfo {
     private final DetailArea detailArea;
     @Schema(description = "채팅방 입장 인원 수")
     private final ChatRoomPerson persons;
+    @Schema(description = "채팅방 참여 가능 인원 수")
+    private final int remainPersonCount;
     @Schema(description = "여행 스타일 키워드")
     private final List<TravelKeyword> travelKeywords;
     @Schema(description = "여행 기간")
     private final TravelPlanDate travelPlanDate;
+    @Schema(description = "채팅방 생성 일시", format = "yyyy-MM-ddTHH:mm:ss")
+    private final String chatRoomCreatedAt;
 
     public ChatRoomPreviewInfo(
             ChatRoomEntity chatRoomEntity,
@@ -36,10 +41,13 @@ public class ChatRoomPreviewInfo {
         this.area = new Area(matchingFormEntity);
         this.detailArea = new DetailArea(matchingFormEntity);
         this.persons = new ChatRoomPerson(userEntities);
+        this.remainPersonCount = matchingFormEntity.getGroupSize().getNumber() - this.persons.getTotalCount();
         this.travelKeywords = matchingFormEntity.getTravelKeywordList()
                 .stream()
                 .map(TravelKeywordEntity::getKeyword)
                 .toList();
         this.travelPlanDate = new TravelPlanDate(matchingFormEntity);
+        this.chatRoomCreatedAt = chatRoomEntity.getCreatedAt()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
     }
 }

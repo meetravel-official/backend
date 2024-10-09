@@ -5,6 +5,7 @@ import com.meetravel.domain.chatroom.entity.ChatMessageEntity;
 import com.meetravel.domain.chatroom.entity.ChatRoomEntity;
 import com.meetravel.domain.chatroom.entity.UserChatRoomEntity;
 import com.meetravel.domain.chatroom.enums.ChatMessageType;
+import com.meetravel.domain.chatroom.enums.ChatRoomSort;
 import com.meetravel.domain.chatroom.event.model.ChatMessages;
 import com.meetravel.domain.chatroom.repository.ChatMessageRepository;
 import com.meetravel.domain.chatroom.repository.ChatRoomRepository;
@@ -247,6 +248,58 @@ public class ChatRoomService {
                 .toList();
 
         return new GetMyChatRoomResponse(chatRoomPreviewInfos);
+    }
+
+    @Transactional(readOnly = true)
+    public SearchChatRoomResponse searchChatRooms(
+            String userId,
+            SearchChatRoomRequest request
+    ) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        List<Long> previousChatRoomIds = userEntity.getUserChatRooms()
+                .stream()
+                .map(it -> it.getChatRoom().getId())
+                .toList();
+
+        List<ChatRoomPreviewInfo> chatRoomPreviewInfos = chatRoomRepository.findAllByIdNotIn(previousChatRoomIds)
+                .stream()
+                .filter(chatRoomEntity -> {
+                    MatchingFormEntity matchingFormEntity = chatRoomEntity.getMatchingForms()
+                            .stream()
+                            .findFirst()
+                            .orElse(null);
+                    if (matchingFormEntity == null) return false;
+
+                    if (request.getAreaCode() != null && request.getAreaCode().equals(matchingFormEntity.getAreaCode())) {
+                        return true;
+                    }
+
+                    if (request.getQuery() != null && matchingFormEntity.getAreaName().contains(request.getQuery())) {
+                        return true;
+                    }
+
+                    return false;
+                })
+                .map(chatRoomEntity -> {
+                    MatchingFormEntity matchingFormEntity = chatRoomEntity.getMatchingForms()
+                            .stream()
+                            .findFirst()
+                            .get();
+
+                    List<UserEntity> joinedUserEntities = chatRoomEntity.getUserChatRooms()
+                            .stream()
+                            .filter(it -> it.getLeaveAt() == null)
+                            .map(UserChatRoomEntity::getUser)
+                            .toList();
+
+                    return new ChatRoomPreviewInfo(chatRoomEntity, matchingFormEntity, joinedUserEntities);
+                })
+                .sorted(getChatRoomPreviewInfoComparator(request.getSort()))
+                .toList();
+
+        return new SearchChatRoomResponse(chatRoomPreviewInfos);
     }
 
     @Transactional(readOnly = true)
@@ -534,6 +587,18 @@ public class ChatRoomService {
 
     private void sendMessagesAndEventPublisher(List<ChatMessageEntity> chatMessageEntities) {
         applicationEventPublisher.publishEvent(new ChatMessages(chatMessageEntities.stream().map(ChatMessage::new).toList()));
+    }
+
+    private Comparator<ChatRoomPreviewInfo> getChatRoomPreviewInfoComparator(ChatRoomSort sort) {
+        Comparator<ChatRoomPreviewInfo> comparator = Comparator.comparingInt(ChatRoomPreviewInfo::getRemainPersonCount);
+
+        if (ChatRoomSort.QUICK_LATEST.equals(sort)) {
+            comparator = comparator.thenComparing(it -> it.getTravelPlanDate().getStartDate());
+        } else {
+            comparator = comparator.thenComparing(Comparator.comparing(ChatRoomPreviewInfo::getChatRoomCreatedAt).reversed());
+        }
+
+        return comparator.thenComparing(Comparator.comparingLong(ChatRoomPreviewInfo::getChatRoomId).reversed());
     }
 
 }
