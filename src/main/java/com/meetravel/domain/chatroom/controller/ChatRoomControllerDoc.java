@@ -91,6 +91,33 @@ public interface ChatRoomControllerDoc {
     ResponseEntity<GetMyChatRoomResponse> getMyChatRooms(@AuthenticationPrincipal UserDetails userDetails);
 
     @Operation(
+            summary = "채팅방 검색",
+            description = """
+                    [operation]
+                    - 조건에 맞는 채팅방을 검색합니다.
+                    
+                    [condition]
+                    - 매칭 신청서가 존재하지 않는 채팅방은 검색에서 제외됩니다.
+                    - 내가 입장 했었던 채팅방은 검색에서 제외됩니다.
+                    - 지역 대분류와 일치하는 채팅방을 검색합니다.
+                      단, 지역 대분류가 전국이라면 지역 검색을 스킵합니다.
+                    - 검색 키워드와 지역 대분류가 부분 일치하는 채팅방을 검색합니다.
+                    
+                    [sorting]
+                    - 최신순(default):
+                      채팅방이 생성된 일시 순서로 정렬됩니다.
+                    - 빠른 출발순:
+                      여행 시작 일자가 가장 가까운 순서로 정렬됩니다.
+                    - 남은 정원이 가장 적은 순서로 정렬됩니다.
+                    - 채팅방이 생성된 순서로 정렬됩니다.
+                    """
+    )
+    ResponseEntity<SearchChatRoomResponse> searchChatRooms(
+            UserDetails userDetails,
+            SearchChatRoomRequest request
+    );
+
+    @Operation(
             summary = "실시간 여행 매칭",
             description = """
                     [operation]

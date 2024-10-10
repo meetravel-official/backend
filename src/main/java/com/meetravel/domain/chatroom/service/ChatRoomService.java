@@ -272,6 +272,10 @@ public class ChatRoomService {
                             .orElse(null);
                     if (matchingFormEntity == null) return false;
 
+                    if ("all".equals(request.getAreaCode())) {
+                        return true;
+                    }
+
                     if (request.getAreaCode() != null && request.getAreaCode().equals(matchingFormEntity.getAreaCode())) {
                         return true;
                     }
