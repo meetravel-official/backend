@@ -28,7 +28,9 @@ import com.meetravel.global.exception.NotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -272,11 +274,7 @@ public class ChatRoomService {
                             .orElse(null);
                     if (matchingFormEntity == null) return false;
 
-                    if ("all".equals(request.getAreaCode())) {
-                        return true;
-                    }
-
-                    if (request.getAreaCode() != null && request.getAreaCode().equals(matchingFormEntity.getAreaCode())) {
+                    if (request.getAreaCode() == null || request.getAreaCode().equals(matchingFormEntity.getAreaCode())) {
                         return true;
                     }
 
@@ -303,7 +301,20 @@ public class ChatRoomService {
                 .sorted(getChatRoomPreviewInfoComparator(request.getSort()))
                 .toList();
 
-        return new SearchChatRoomResponse(chatRoomPreviewInfos);
+        Pageable pageable = request.generatePageable();
+        Page<ChatRoomPreviewInfo> chatRoomPreviewInfoPage = PageableExecutionUtils.getPage(
+                chatRoomPreviewInfos.subList(
+                        (int) pageable.getOffset(),
+                        Math.min(
+                                (((int) pageable.getOffset()) + pageable.getPageSize()),
+                                chatRoomPreviewInfos.size()
+                        )
+                ),
+                pageable,
+                chatRoomPreviewInfos::size
+        );
+
+        return new SearchChatRoomResponse(chatRoomPreviewInfoPage);
     }
 
     @Transactional(readOnly = true)

@@ -3,6 +3,8 @@ package com.meetravel.domain.chatroom.dto;
 import com.meetravel.domain.chatroom.enums.ChatRoomSort;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Getter;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Getter
 public class SearchChatRoomRequest {
@@ -16,6 +18,13 @@ public class SearchChatRoomRequest {
     private final int page;
     @Parameter(description = "페이지 크기")
     private final int pageSize;
+
+    public Pageable generatePageable() {
+        return PageRequest.of(
+                this.page,
+                this.pageSize
+        );
+    }
 
     public SearchChatRoomRequest(
             String query,
