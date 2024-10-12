@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoomEntity, Long> {
     List<ChatRoomEntity> findAllByIdNotIn(List<Long> ids);
+    List<ChatRoomEntity> findTop9By(Sort sort);
     List<ChatRoomEntity> findTop9ByIdNotIn(List<Long> ids, Sort sort);
 }

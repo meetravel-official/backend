@@ -265,7 +265,14 @@ public class ChatRoomService {
                 .map(it -> it.getChatRoom().getId())
                 .toList();
 
-        List<ChatRoomPreviewInfo> chatRoomPreviewInfos = chatRoomRepository.findAllByIdNotIn(previousChatRoomIds)
+        List<ChatRoomEntity> chatRoomEntities;
+        if (previousChatRoomIds.isEmpty()) {
+            chatRoomEntities = chatRoomRepository.findAll();
+        } else {
+            chatRoomEntities = chatRoomRepository.findAllByIdNotIn(previousChatRoomIds);
+        }
+
+        List<ChatRoomPreviewInfo> chatRoomPreviewInfos = chatRoomEntities
                 .stream()
                 .filter(chatRoomEntity -> {
                     MatchingFormEntity matchingFormEntity = chatRoomEntity.getMatchingForms()
@@ -327,10 +334,16 @@ public class ChatRoomService {
                 .map(it -> it.getChatRoom().getId())
                 .toList();
 
-        List<ChatRoomEntity> chatRoomEntities = chatRoomRepository.findTop9ByIdNotIn(
-                previousChatRoomIds,
-                Sort.by(Sort.Direction.DESC, "id")
-        );
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        List<ChatRoomEntity> chatRoomEntities;
+        if (previousChatRoomIds.isEmpty()) {
+            chatRoomEntities = chatRoomRepository.findTop9By(sort);
+        } else {
+            chatRoomEntities = chatRoomRepository.findTop9ByIdNotIn(
+                    previousChatRoomIds,
+                    sort
+            );
+        }
 
         List<ChatRoomPreviewInfo> chatRoomPreviewInfos = chatRoomEntities
                 .stream()
