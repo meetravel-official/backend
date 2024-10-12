@@ -41,6 +41,7 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         return GetMyPageResponse.builder()
+                .userId(user.getUserId())
                 .profileImageUrl(user.getProfileImageUrl())
                 .nickname(user.getNickname())
                 .gender(user.getGender())

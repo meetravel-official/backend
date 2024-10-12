@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Getter
 @Builder
 public class GetMyPageResponse {
+    private String userId;
     private String profileImageUrl;
     private String nickname;
     private Gender gender;
