@@ -24,4 +24,11 @@ public class DailyTravelPlaceEntity {
     protected DailyTravelPlaceEntity() {
         this.id = 0L;
     }
+
+    public DailyTravelPlaceEntity(DailyPlanEntity dailyPlan, TravelPlaceEntity travelPlace) {
+        this();
+
+        this.dailyPlan = dailyPlan;
+        this.travelPlace = travelPlace;
+    }
 }

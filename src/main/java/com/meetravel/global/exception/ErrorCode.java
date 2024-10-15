@@ -42,7 +42,10 @@ public enum ErrorCode {
     ALREADY_EXISTS_MATCHING_FORM(HttpStatus.BAD_REQUEST, "작성된 매칭 신청서가 이미 존재합니다."),
     NOT_FOUND_TRAVEL_PLAN(HttpStatus.NOT_FOUND, "채팅방에 연결된 여행 계획서를 찾을 수 없습니다."),
     NOT_JOINED_CHAT_ROOM(HttpStatus.BAD_REQUEST, "여행 진행 중인 채팅방이 존재하지 않습니다."),
-    TRAVEL_KEYWORD_LIMIT(HttpStatus.BAD_REQUEST, "여행 키워드는 3개 초과로 설정할 수 없습니다.");
+    TRAVEL_KEYWORD_LIMIT(HttpStatus.BAD_REQUEST, "여행 키워드는 3개 초과로 설정할 수 없습니다."),
+    TRAVEL_PLAN_DATE_NOT_VALID(HttpStatus.BAD_REQUEST, "여행 기간과 일치하지 않는 여행 계획을 세울 수 없습니다."),
+    NOT_SHARED_TRAVEL_PLACE_PICK(HttpStatus.BAD_REQUEST, "공유하지 않은 여행 장소를 선택할 수 없습니다."),
+    PLACE_TYPE_PICK_LIMIT(HttpStatus.BAD_REQUEST, "여행 장소는 장소 유형 별 두 개까지 선택할 수 있습니다.");
 
     ErrorCode(HttpStatus status, String message) {
         this.status = status;

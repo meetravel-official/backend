@@ -1,6 +1,7 @@
 package com.meetravel.domain.travel.controller;
 
 import com.meetravel.domain.travel.dto.GetChatRoomTravelPlanResponse;
+import com.meetravel.domain.travel.dto.ModifyDailyTravelPlanRequest;
 import com.meetravel.domain.travel.dto.ModifyTravelPlanKeywordRequest;
 import com.meetravel.domain.travel.service.TravelPlanService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,20 @@ public class TravelPlanController implements TravelPlanControllerDoc {
             @RequestBody ModifyTravelPlanKeywordRequest request
     ) {
         travelPlanService.modifyTravelPlanKeywords(
+                userDetails.getUsername(),
+                chatRoomId,
+                request
+        );
+    }
+
+    @Override
+    @PutMapping("/plans/chat-rooms/{chatRoomId}")
+    public void modifyDailyTravelPlans(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long chatRoomId,
+            @RequestBody ModifyDailyTravelPlanRequest request
+    ) {
+        travelPlanService.modifyDailyTravelPlans(
                 userDetails.getUsername(),
                 chatRoomId,
                 request
